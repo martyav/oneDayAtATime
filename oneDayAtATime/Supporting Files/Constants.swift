@@ -1,5 +1,5 @@
 //
-//  List.swift
+//  Constants.swift
 //  oneDayAtATime
 //
 //  Created by Marty Hernandez Avedon on 11/27/17.
@@ -8,4 +8,10 @@
 
 import Foundation
 
-typealias Checklist = [ListItem]
+class Constants {
+    static let shared = Constants ()
+    
+    private init() {}
+    
+    let listMakerCellIdentifier = "currentlyEditing"
+}

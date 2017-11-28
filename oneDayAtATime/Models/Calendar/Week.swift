@@ -9,15 +9,15 @@
 import Foundation
 
 class Week: Codable {
-    var monday: List?
-    var tuesday: List?
-    var wednesday: List?
-    var thursday: List?
-    var friday: List?
-    var saturday: List?
-    var sunday: List?
+    var monday: Checklist?
+    var tuesday: Checklist?
+    var wednesday: Checklist?
+    var thursday: Checklist?
+    var friday: Checklist?
+    var saturday: Checklist?
+    var sunday: Checklist?
     
-    required init(mon: List?, tue: List?, wed: List?, thu: List?, fri: List?, sat: List?, sun: List?) {
+    required init(mon: Checklist?, tue: Checklist?, wed: Checklist?, thu: Checklist?, fri: Checklist?, sat: Checklist?, sun: Checklist?) {
         self.monday = mon
         self.tuesday = tue
         self.wednesday = wed
