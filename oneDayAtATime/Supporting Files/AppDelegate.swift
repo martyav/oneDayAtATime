@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var tabbar: UITabBarController?
+    var tabBarController: UITabBarController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         self.window = UIWindow(frame: UIScreen.main.bounds)
@@ -21,10 +21,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
         }
         
-        self.tabbar = UITabBarController()
-        tabbar?.viewControllers = [ListMakerViewController(), TodaysViewController(), SelectListViewController()]
+        self.tabBarController = UITabBarController()
+        self.tabBarController?.viewControllers = [TodaysViewController(), ListMakerViewController(), SelectListViewController()]
         
-        windowCreated.rootViewController = tabbar
+        let firstItem = self.tabBarController?.tabBar.items![0]
+        let secondItem = self.tabBarController?.tabBar.items![1]
+        let thirdItem = self.tabBarController?.tabBar.items![2]
+        
+        firstItem?.title = "Today"
+        secondItem?.title = "Make Lists"
+        thirdItem?.title = "Profile"
+        
+        windowCreated.rootViewController = tabBarController
         windowCreated.makeKeyAndVisible()
         
         return true

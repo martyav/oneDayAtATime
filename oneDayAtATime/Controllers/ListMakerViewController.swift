@@ -8,40 +8,146 @@
 
 import UIKit
 
-class ListMakerViewController: UITableViewController {
-
-    var currentList: Checklist?
+class ListMakerViewController: UIViewController {
+    var currentList: Checklist = [] {
+        didSet {
+            self.tableView?.reloadData()
+        }
+    }
+    
+    var userTextInput: UITextField!
+    var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.createViews()
+        self.setUpViewHeirarchy()
+        self.prepareForConstraints()
+        self.constrainViews()
+        self.styleViews()
+        
         self.tableView.dataSource = self
         self.tableView.delegate = self
+        self.userTextInput.delegate = self
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 50.0
-        
-        self.tableView.backgroundColor = .clear
-        self.tableView.separatorStyle = .none
-        
-        self.tableView.register(ListMakerTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
+        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
     }
+}
+
+extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentList?.count ?? 1
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.shared.listMakerCellIdentifier, for: indexPath) as! ListMakerTableViewCell
-        
-        if let contents = currentList {
-            cell.titleLabel?.text = contents[indexPath.row].title
-            cell.detailLabel?.text = contents[indexPath.row].detail
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if currentList.isEmpty {
+            return 1
         } else {
-            cell.titleLabel?.text = "Your list is currently empty"
-            cell.detailLabel?.text = "Click on the edit button to edit this list. Click on add to add another item."
+            return currentList.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard section == 0 else { return nil }
+        
+        return "Make A New List"
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.shared.listMakerCellIdentifier, for: indexPath) as! ListTableViewCell
+        
+        if self.currentList.isEmpty {
+            cell.titleLabel?.text = "I'm a new list. I'm empty!"
+            cell.detailLabel?.text = "Type into the textbar to add your items."
+        } else {
+            cell.titleLabel?.text = self.currentList[indexPath.row].title
+            cell.detailLabel?.text = self.currentList[indexPath.row].detail
         }
         
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
 }
+
+extension ListMakerViewController: CustomUIKitObject {
+    func createViews() {
+        self.userTextInput = UITextField()
+        self.tableView = UITableView()
+    }
+    
+    func setUpViewHeirarchy() {
+        self.view.addSubview(self.userTextInput)
+        self.view.addSubview(self.tableView)
+    }
+    
+    func prepareForConstraints() {
+        self.userTextInput.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    func constrainViews() {
+        _ = [
+            self.userTextInput.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.8),
+            self.userTextInput.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05),
+            self.userTextInput.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.userTextInput.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
+            self.tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            self.tableView.topAnchor.constraint(equalTo: self.userTextInput.bottomAnchor, constant: 8),
+            self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ].map { $0.isActive = true }
+    }
+    
+    func styleViews() {
+        self.userTextInput.backgroundColor = .white
+        self.userTextInput.tintColor = .white
+        
+        self.tableView.backgroundColor = .clear
+        self.tableView.separatorStyle = .none
+        
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 50.0
+    }
+}
+
+extension ListMakerViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let userTyped = self.userTextInput.text {
+            let newItem = ListItem(title: userTyped, detail: "", checkedOff: false)
+            currentList.append(newItem)
+            self.userTextInput.text = nil
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == self.userTextInput {
+            self.userTextInput.resignFirstResponder()
+        }
+        
+        return true
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

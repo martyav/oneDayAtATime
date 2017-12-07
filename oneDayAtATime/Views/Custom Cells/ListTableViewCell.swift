@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ListMakerTableViewCell: UITableViewCell, CustomUIKitObject {
+class ListTableViewCell: UITableViewCell, CustomUIKitObject {
     var titleLabel: UILabel!
     var detailLabel: UILabel!
     
