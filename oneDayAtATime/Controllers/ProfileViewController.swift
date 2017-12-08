@@ -28,7 +28,7 @@ class ProfileViewController: UIViewController {
         self.collectionView.delegate = self
         
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "profile")
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader)
     }
     
     
@@ -45,7 +45,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
         
         if kind == UICollectionElementKindSectionHeader {
-            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "profile", for: indexPath)
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader, for: indexPath)
             
             if header.subviews.isEmpty {
                 let label = UILabel(frame: frame)

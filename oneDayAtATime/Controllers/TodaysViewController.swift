@@ -19,8 +19,10 @@ class TodaysViewController: UIViewController {
         super.viewDidLoad()
         
         todaysChecklist = []
-        let list1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
-        weeklyRoster = ["Mon": [list1]]
+        let listItem1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
+        let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
+        let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
+        weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
         
         self.createViews()
         self.setUpViewHeirarchy()
