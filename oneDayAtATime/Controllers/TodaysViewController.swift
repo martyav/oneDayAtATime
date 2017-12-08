@@ -19,6 +19,8 @@ class TodaysViewController: UIViewController {
         super.viewDidLoad()
         
         todaysChecklist = []
+        let list1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
+        weeklyRoster = ["Mon": [list1]]
         
         self.createViews()
         self.setUpViewHeirarchy()
@@ -85,9 +87,17 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.shared.storedListCellIdentifier, for: indexPath) as! StoredListCollectionViewCell
         
-        cell.titleLabel.text = String(describing: indexPath.row)
+        cell.titleLabel.text = Constants.shared.weekDayNames[indexPath.row]
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
+        if let selectedList = weeklyRoster[dayOfTheWeek] {
+            todaysChecklist = selectedList
+            tableView.reloadData()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -147,7 +157,7 @@ extension TodaysViewController: CustomUIKitObject {
             self.collectionView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.collectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.20),
             self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -40) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
-        ].map { $0.isActive = true }
+            ].map { $0.isActive = true }
     }
     
     func styleViews() {

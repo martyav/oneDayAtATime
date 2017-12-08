@@ -11,9 +11,12 @@ import UIKit
 class ProfileViewController: UIViewController {
     
     var collectionView: UICollectionView!
+    var month: Month!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        month = Month()
         
         self.createViews()
         self.setUpViewHeirarchy()
@@ -27,23 +30,14 @@ class ProfileViewController: UIViewController {
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
         self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "profile")
     }
+    
+    
 }
 
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
-    }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 4
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.shared.storedListCellIdentifier, for: indexPath) as! StoredListCollectionViewCell
-        
-        cell.titleLabel.text = String(describing: indexPath.row)
-        
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -65,6 +59,24 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         return header
     }
     
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 7
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.shared.storedListCellIdentifier, for: indexPath) as! StoredListCollectionViewCell
+        
+        cell.titleLabel.text = Constants.shared.weekDayNames[indexPath.row]
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let week = indexPath.section
+        let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
+        let selectedList = month[week][dayOfTheWeek]
+        // segue back to today vc and make this list today's list
+    }
 }
 
 extension ProfileViewController: CustomUIKitObject {

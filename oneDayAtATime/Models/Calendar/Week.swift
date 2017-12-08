@@ -8,22 +8,4 @@
 
 import Foundation
 
-class Week: Codable {
-    var monday: Checklist?
-    var tuesday: Checklist?
-    var wednesday: Checklist?
-    var thursday: Checklist?
-    var friday: Checklist?
-    var saturday: Checklist?
-    var sunday: Checklist?
-    
-    required init(mon: Checklist?, tue: Checklist?, wed: Checklist?, thu: Checklist?, fri: Checklist?, sat: Checklist?, sun: Checklist?) {
-        self.monday = mon
-        self.tuesday = tue
-        self.wednesday = wed
-        self.thursday = thu
-        self.friday = fri
-        self.saturday = sat
-        self.sunday = sun
-    }
-}
+typealias Week = [String: Checklist]

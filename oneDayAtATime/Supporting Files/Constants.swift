@@ -15,4 +15,5 @@ class Constants {
     
     let listMakerCellIdentifier = "listMakerCell"
     let storedListCellIdentifier = "storedListCell"
+    let weekDayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 }
