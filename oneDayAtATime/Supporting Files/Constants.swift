@@ -13,5 +13,6 @@ class Constants {
     
     private init() {}
     
-    let listMakerCellIdentifier = "currentlyEditing"
+    let listMakerCellIdentifier = "listMakerCell"
+    let storedListCellIdentifier = "storedListCell"
 }

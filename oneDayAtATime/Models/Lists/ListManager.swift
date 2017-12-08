@@ -9,5 +9,8 @@
 import Foundation
 
 class ListManager {
-
+//    static var current: Checklist = {
+//        get {}
+//        set {}
+//    }
 }

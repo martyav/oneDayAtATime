@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         self.tabBarController = UITabBarController()
-        self.tabBarController?.viewControllers = [TodaysViewController(), ListMakerViewController(), SelectListViewController()]
+        self.tabBarController?.viewControllers = [TodaysViewController(), ListMakerViewController(), ProfileViewController()]
         
         let firstItem = self.tabBarController?.tabBar.items![0]
         let secondItem = self.tabBarController?.tabBar.items![1]
