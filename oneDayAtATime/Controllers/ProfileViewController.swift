@@ -25,7 +25,7 @@ class ProfileViewController: UIViewController {
         self.collectionView.delegate = self
         
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Profile")
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "profile")
     }
 }
 
@@ -51,7 +51,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
         
         if kind == UICollectionElementKindSectionHeader {
-            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Profile", for: indexPath)
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "profile", for: indexPath)
             
             if header.subviews.isEmpty {
                 let label = UILabel(frame: frame)
@@ -59,7 +59,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
             }
             
             let titleLabel = header.subviews[0] as! UILabel
-            titleLabel.text = String(describing: indexPath)
+            titleLabel.text = "Week \(String(describing: indexPath.section + 1))"
         }
         
         return header

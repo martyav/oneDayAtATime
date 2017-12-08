@@ -34,6 +34,7 @@ class TodaysViewController: UIViewController {
         
         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "today")
     }
     
 }
@@ -88,6 +89,26 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let frame = CGRect(x: 8, y: 0, width: 100, height: 40)
+        var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
+        
+        if kind == UICollectionElementKindSectionHeader {
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "today", for: indexPath)
+            
+            if header.subviews.isEmpty {
+                let label = UILabel(frame: frame)
+                label.clearsContextBeforeDrawing = false
+                header.addSubview(label)
+            }
+            
+            let titleLabel = header.subviews[0] as! UILabel
+            titleLabel.text = "Schedules"
+        }
+        
+        return header
+    }
 }
 
 extension TodaysViewController: CustomUIKitObject {
@@ -99,7 +120,8 @@ extension TodaysViewController: CustomUIKitObject {
         layout.minimumInteritemSpacing = 20
         layout.minimumLineSpacing = 20
         layout.estimatedItemSize = CGSize(width: 100, height: 100)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
+        layout.headerReferenceSize = CGSize(width: 1, height: 30)
+        layout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
         
         self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     }
