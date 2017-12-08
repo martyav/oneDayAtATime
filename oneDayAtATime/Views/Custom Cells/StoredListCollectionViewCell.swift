@@ -25,6 +25,10 @@ class StoredListCollectionViewCell: UICollectionViewCell, CustomUIKitObject {
         styleViews()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
+    
     func createViews() {
         self.titleLabel = UILabel()
     }
@@ -39,14 +43,18 @@ class StoredListCollectionViewCell: UICollectionViewCell, CustomUIKitObject {
     
     func constrainViews() {
         _ = [
-            self.titleLabel.heightAnchor.constraint(equalToConstant: 40),
-            self.titleLabel.widthAnchor.constraint(equalTo: self.contentView.widthAnchor),
             self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             self.titleLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor)
-        ]
+            ].map { $0.isActive = true }
     }
     
     func styleViews() {
-        self.backgroundColor = .red
+        self.titleLabel.font = UIFont(name: "Avenir", size: 20)
+        self.titleLabel.numberOfLines = 1
+        self.titleLabel.lineBreakMode = .byTruncatingTail
+        self.titleLabel.backgroundColor = .white
+        self.titleLabel.contentMode = .center
+        
+        self.contentView.backgroundColor = .red
     }
 }
