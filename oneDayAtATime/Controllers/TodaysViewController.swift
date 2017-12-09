@@ -15,14 +15,22 @@ class TodaysViewController: UIViewController {
     var tableView: UITableView!
     var collectionView: UICollectionView!
     
+    var currentTime: CurrentTime!
+    var todaysDate: Date!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        todaysChecklist = []
         let listItem1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
         let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
         let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
         weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
+        
+        currentTime = CurrentTime()
+        todaysDate = currentTime.todaysDate
+        let dayOfWeek = currentTime.dayOfWeek()
+        
+        todaysChecklist = weeklyRoster[dayOfWeek] ?? []
         
         self.createViews()
         self.setUpViewHeirarchy()
@@ -40,7 +48,6 @@ class TodaysViewController: UIViewController {
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
         self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "today")
     }
-    
 }
 
 extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
@@ -96,10 +103,9 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
-        if let selectedList = weeklyRoster[dayOfTheWeek] {
-            todaysChecklist = selectedList
-            tableView.reloadData()
-        }
+        
+        todaysChecklist = weeklyRoster[dayOfTheWeek] ?? []
+        tableView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -127,11 +133,12 @@ extension TodaysViewController: CustomUIKitObject {
     func createViews() {
         self.tableView = UITableView()
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let cellSideLength = (self.view.frame.height/5) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
         
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 20
         layout.minimumLineSpacing = 20
-        layout.estimatedItemSize = CGSize(width: 100, height: 100)
+        layout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
         layout.headerReferenceSize = CGSize(width: 1, height: 30)
         layout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
         
@@ -172,4 +179,3 @@ extension TodaysViewController: CustomUIKitObject {
         self.collectionView.backgroundColor = .white
     }
 }
-

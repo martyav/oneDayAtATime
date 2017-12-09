@@ -45,7 +45,7 @@ class StoredListCollectionViewCell: UICollectionViewCell, CustomUIKitObject {
         _ = [
             self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             self.titleLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor)
-            ].map { $0.isActive = true }
+        ].map { $0.isActive = true }
     }
     
     func styleViews() {

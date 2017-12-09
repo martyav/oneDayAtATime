@@ -9,12 +9,15 @@
 import Foundation
 
 class Constants {
-    static let shared = Constants ()
+    static let shared = Constants()
     
     private init() {}
     
     let listMakerCellIdentifier = "listMakerCell"
     let storedListCellIdentifier = "storedListCell"
     let profileSectionHeader = "profileHeader"
-    let weekDayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    
+    let todayToListMakerSegueIdentifier = "todayToListMaker"
+    
+    let weekDayNames = CurrentTime.weekDayNames()
 }
