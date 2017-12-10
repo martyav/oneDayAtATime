@@ -21,4 +21,5 @@ class Constants {
     let todayToListMakerSegueIdentifier = "todayToListMaker"
     
     let weekDayNames = CurrentTime.shared.weekDayNames()
+    let weekDayInitials = CurrentTime.shared.dayOfWeek()
 }

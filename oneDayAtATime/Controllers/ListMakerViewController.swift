@@ -100,9 +100,17 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func didTapSave(sender: UIButton) {
-        if defaults.array(forKey: "currentMonth") == nil {
-            defaults.set(["Sun": self.currentList], forKey: "currentMonth")
-        }
+        let magicNumber = CGFloat(18.0) // need to get a relative value to prevent controls from exceeding margin...
+        let alert = UIAlertController(title: "", message: "\n\n\n\n\n", preferredStyle: .actionSheet)
+        let frame = CGRect(x: 0, y: 8, width: alert.view.bounds.size.width - magicNumber, height: 120)
+        alert.view.addSubview(SaveAlertView(frame: frame))
+        let confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: nil)
+        alert.addAction(confirmButton)
+        self.present(alert, animated: true, completion: nil)
+        
+//        if defaults.array(forKey: "currentMonth") == nil {
+//            defaults.set(["Sun": self.currentList], forKey: "currentMonth")
+//        }
     }
 }
 
