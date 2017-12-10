@@ -9,7 +9,6 @@
 import UIKit
 
 class SaveAlertView: UIView, CustomUIKitObject {
-    //var confirmButton: UIButton!
     var contentView: UIView!
     var segmentedControlWeek: UISegmentedControl!
     var segmentedControlDay: UISegmentedControl!
@@ -33,21 +32,18 @@ class SaveAlertView: UIView, CustomUIKitObject {
     }
     
      func createViews() {
-        //self.confirmButton = UIButton()
         self.contentView = UIView()
-        self.segmentedControlWeek = UISegmentedControl(items: ["Wk 1", "Wk 2", "Wk 3", "Wk 4"])
-        self.segmentedControlDay = UISegmentedControl(items: ["S", "M", "T", "W", "T", "F", "S"])
+        self.segmentedControlWeek = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
+        self.segmentedControlDay = UISegmentedControl(items: Constants.shared.weekDayNames)
     }
     
      func setUpViewHeirarchy() {
-        //self.addSubview(self.confirmButton)
         self.addSubview(contentView)
         self.contentView.addSubview(self.segmentedControlWeek)
         self.contentView.addSubview(self.segmentedControlDay)
     }
     
     func prepareForConstraints() {
-       // self.confirmButton.translatesAutoresizingMaskIntoConstraints = false
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlWeek.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlDay.translatesAutoresizingMaskIntoConstraints = false
@@ -69,19 +65,11 @@ class SaveAlertView: UIView, CustomUIKitObject {
             self.segmentedControlDay.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
             self.segmentedControlDay.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             self.segmentedControlDay.heightAnchor.constraint(equalToConstant: 44)
-            
-//            self.confirmButton.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-//            self.confirmButton.widthAnchor.constraint(equalTo: self.widthAnchor),
-//            self.confirmButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-//            self.confirmButton.heightAnchor.constraint(equalToConstant: 44)
         ].map { $0.isActive = true }
     }
     
     func styleViews() {
         self.segmentedControlWeek.apportionsSegmentWidthsByContent = true
         self.segmentedControlDay.apportionsSegmentWidthsByContent = true
-        //self.confirmButton.setTitle("Confirm", for: .normal)
     }
 }
-
-
