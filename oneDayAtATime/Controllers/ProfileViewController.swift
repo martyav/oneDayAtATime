@@ -8,30 +8,57 @@
 
 import UIKit
 
+/* WIP
+
+ Initially, this was set up so users could switch weeks. However, on further thought, this functionality was placed inside today's vc. We could use this vc to allow user's to switch months, view how many lists they have completed...or just get rid of it entirely since it may just be redundant
+*/
+
 class ProfileViewController: UIViewController {
     
     var collectionView: UICollectionView!
-    var month: Month!
+    
+   // var defaults = UserDefaults.standard
+    
+//    var month: Month!
+//    var selectedWeek: Week = [:] {
+//        didSet {
+//
+//        }
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        month = Month()
+//        month = defaults.object(forKey: "currentMonth") as? Month ?? []
+//
+//        if month.isEmpty {
+//            print("no week selected")
+//        } else {
+//            selectedWeek = month[CurrentTime.shared.weekOfMonth() - 1]
+//        }
         
+        self.implementGUI()
+        self.setDelegatesAndDataSources()
+        self.registerCells()
+    }
+    
+    func setDelegatesAndDataSources() {
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
+    }
+    
+    func registerCells() {
+        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader)
+    }
+    
+    func implementGUI() {
         self.createViews()
         self.setUpViewHeirarchy()
         self.prepareForConstraints()
         self.constrainViews()
         self.styleViews()
-        
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-        
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader)
     }
-    
-    
 }
 
 extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -74,23 +101,24 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let week = indexPath.section
         let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
-        let selectedList = month[week][dayOfTheWeek]
-        // segue back to today vc and make this list today's list
+       // let selectedList = month[week][dayOfTheWeek]
+       // self.selectedWeek = month[indexPath.section - 1]
     }
 }
 
 extension ProfileViewController: CustomUIKitObject {
     func createViews() {
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let cellSideLength = (self.view.frame.height/8) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
         
-        layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        layout.estimatedItemSize = CGSize(width: 50, height: 50)
-        layout.headerReferenceSize = CGSize(width: 200, height: 40)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 10, right: 10)
+        collectionViewLayout.scrollDirection = .vertical
+        collectionViewLayout.minimumInteritemSpacing = 5
+        collectionViewLayout.minimumLineSpacing = 5
+        collectionViewLayout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
+        collectionViewLayout.headerReferenceSize = CGSize(width: 200, height: 40)
+        collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 5, bottom: 10, right: 5)
         
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
     }
     
     func setUpViewHeirarchy() {

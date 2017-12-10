@@ -10,12 +10,17 @@ import UIKit
 
 class TodaysViewController: UIViewController {
     
-    var todaysChecklist: Checklist!
+    var todaysChecklist: Checklist = [] {
+        didSet {
+            self.tableView?.reloadData()
+        }
+    }
+    
     var weeklyRoster: Week!
     var tableView: UITableView!
+    var segmentedControl: UISegmentedControl!
     var collectionView: UICollectionView!
     
-    var currentTime: CurrentTime!
     var todaysDate: Date!
     
     override func viewDidLoad() {
@@ -26,27 +31,38 @@ class TodaysViewController: UIViewController {
         let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
         weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
         
-        currentTime = CurrentTime()
-        todaysDate = currentTime.todaysDate
-        let dayOfWeek = currentTime.dayOfWeek()
+        todaysDate = CurrentTime.shared.todaysDate
+        let dayOfWeek = CurrentTime.shared.dayOfWeek()
+                
+        if let todayIsNotEmpty = weeklyRoster[dayOfWeek] {
+            todaysChecklist = todayIsNotEmpty
+        }
         
-        todaysChecklist = weeklyRoster[dayOfWeek] ?? []
-        
-        self.createViews()
-        self.setUpViewHeirarchy()
-        self.prepareForConstraints()
-        self.constrainViews()
-        self.styleViews()
-        
+        self.implementGUI()
+        self.setDelegatesAndDatasources()
+        self.registerCells()
+    }
+    
+    func setDelegatesAndDatasources() {
         self.tableView.dataSource = self
         self.tableView.delegate = self
         
         self.collectionView.dataSource = self
         self.collectionView.delegate = self
-        
+    }
+    
+    func registerCells() {
         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
         self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "today")
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.todaySectionHeader)
+    }
+    
+    func implementGUI() {
+        self.createViews()
+        self.setUpViewHeirarchy()
+        self.prepareForConstraints()
+        self.constrainViews()
+        self.styleViews()
     }
 }
 
@@ -105,7 +121,6 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
         let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
         
         todaysChecklist = weeklyRoster[dayOfTheWeek] ?? []
-        tableView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -113,7 +128,7 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
         var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
         
         if kind == UICollectionElementKindSectionHeader {
-            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "today", for: indexPath)
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.todaySectionHeader, for: indexPath)
             
             if header.subviews.isEmpty {
                 let label = UILabel(frame: frame)
@@ -132,46 +147,63 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension TodaysViewController: CustomUIKitObject {
     func createViews() {
         self.tableView = UITableView()
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        self.segmentedControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
+        
+        let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         let cellSideLength = (self.view.frame.height/5) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
         
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 20
-        layout.minimumLineSpacing = 20
-        layout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
-        layout.headerReferenceSize = CGSize(width: 1, height: 30)
-        layout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
+        collectionViewLayout.scrollDirection = .horizontal
+        collectionViewLayout.minimumInteritemSpacing = 20
+        collectionViewLayout.minimumLineSpacing = 20
+        collectionViewLayout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
+        collectionViewLayout.headerReferenceSize = CGSize(width: 1, height: 30)
+        collectionViewLayout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
         
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
     }
     
     func setUpViewHeirarchy() {
         self.view.addSubview(self.tableView)
+        self.view.addSubview(self.segmentedControl)
         self.view.addSubview(self.collectionView)
     }
     
     func prepareForConstraints() {
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         self.collectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
+        let standardWidth = self.view.widthAnchor
+        let standardXPosition = self.view.centerXAnchor
+        
         _ = [
-            self.tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-            self.tableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.tableView.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
+            self.tableView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
-            self.tableView.bottomAnchor.constraint(equalTo: self.collectionView.topAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.segmentedControl.topAnchor),
             
-            self.collectionView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-            self.collectionView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.segmentedControl.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
+            self.segmentedControl.centerXAnchor.constraint(equalTo: standardXPosition),
+            self.segmentedControl.heightAnchor.constraint(equalToConstant: 44),
+            self.segmentedControl.bottomAnchor.constraint(equalTo: self.collectionView.topAnchor, constant: -4),
+            
+            self.collectionView.widthAnchor.constraint(equalTo: standardWidth),
+            self.collectionView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.collectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.20),
             self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -40) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
             ].map { $0.isActive = true }
     }
     
     func styleViews() {
+        self.view.backgroundColor = .white
+        
         self.tableView.backgroundColor = .clear
         self.tableView.separatorStyle = .none
+        
+        self.segmentedControl.backgroundColor = .white
+        self.segmentedControl.apportionsSegmentWidthsByContent = true
         
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 50.0

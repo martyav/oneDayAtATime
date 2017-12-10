@@ -9,12 +9,16 @@
 import Foundation
 
 class CurrentTime {
+    static let shared = CurrentTime()
+    
+    private init() {}
+    
     let todaysDate = Date()
     let dateFormatter = DateFormatter()
-    static let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
     
     func weekOfMonth() -> Int {
-        return CurrentTime.calendar.component(.weekOfMonth, from: self.todaysDate)
+        return self.calendar.component(.weekOfMonth, from: self.todaysDate)
     }
     
     func dayOfWeek() -> String {
@@ -22,7 +26,7 @@ class CurrentTime {
         return dateFormatter.string(from: todaysDate)
     }
     
-    static func weekDayNames() -> [String] {
-        return CurrentTime.calendar.shortStandaloneWeekdaySymbols
+    func weekDayNames() -> [String] {
+        return self.calendar.shortStandaloneWeekdaySymbols
     }
 }

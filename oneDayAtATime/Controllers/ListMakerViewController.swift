@@ -21,17 +21,27 @@ class ListMakerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.implementGUI()
+        self.setDelegatesAndDatasources()
+        self.registerCells()
+    }
+    
+    func setDelegatesAndDatasources() {
+        self.tableView.dataSource = self
+        self.tableView.delegate = self
+        self.userTextInput.delegate = self
+    }
+    
+    func registerCells() {
+         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
+    }
+    
+    func implementGUI() {
         self.createViews()
         self.setUpViewHeirarchy()
         self.prepareForConstraints()
         self.constrainViews()
         self.styleViews()
-        
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
-        self.userTextInput.delegate = self
-        
-        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
     }
 }
 
@@ -67,6 +77,24 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+    }
+}
+
+extension ListMakerViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if let userTyped = self.userTextInput.text {
+            let newItem = ListItem(title: userTyped, detail: "", checkedOff: false)
+            currentList.append(newItem)
+            self.userTextInput.text = nil
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == self.userTextInput {
+            self.userTextInput.resignFirstResponder()
+        }
+        
+        return true
     }
 }
 
@@ -109,45 +137,3 @@ extension ListMakerViewController: CustomUIKitObject {
         self.tableView.estimatedRowHeight = 50.0
     }
 }
-
-extension ListMakerViewController: UITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        if let userTyped = self.userTextInput.text {
-            let newItem = ListItem(title: userTyped, detail: "", checkedOff: false)
-            currentList.append(newItem)
-            self.userTextInput.text = nil
-        }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == self.userTextInput {
-            self.userTextInput.resignFirstResponder()
-        }
-        
-        return true
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

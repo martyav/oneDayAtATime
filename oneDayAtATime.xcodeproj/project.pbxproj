@@ -119,7 +119,6 @@
 			children = (
 				051C5D9A1FCCC732005EA454 /* Week.swift */,
 				051C5D9C1FCCC91D005EA454 /* Month.swift */,
-				056ED0AE1FDCA56100C3CAA3 /* CurrentTime.swift */,
 			);
 			path = Calendar;
 			sourceTree = "<group>";
@@ -129,6 +128,7 @@
 			children = (
 				051C5D7B1FCCBC23005EA454 /* AppDelegate.swift */,
 				05B79EB01FCD12DE00E4BCB3 /* Constants.swift */,
+				056ED0AE1FDCA56100C3CAA3 /* CurrentTime.swift */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";

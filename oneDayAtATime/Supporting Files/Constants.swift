@@ -16,8 +16,9 @@ class Constants {
     let listMakerCellIdentifier = "listMakerCell"
     let storedListCellIdentifier = "storedListCell"
     let profileSectionHeader = "profileHeader"
+    let todaySectionHeader = "todayHeader"
     
     let todayToListMakerSegueIdentifier = "todayToListMaker"
     
-    let weekDayNames = CurrentTime.weekDayNames()
+    let weekDayNames = CurrentTime.shared.weekDayNames()
 }
