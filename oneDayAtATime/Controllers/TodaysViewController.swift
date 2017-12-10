@@ -9,33 +9,49 @@
 import UIKit
 
 class TodaysViewController: UIViewController {
-    
     var todaysChecklist: Checklist = [] {
         didSet {
             self.tableView?.reloadData()
         }
     }
     
-    var weeklyRoster: Week!
+    var weeklyRoster: Week = [:] {
+        didSet {
+            self.collectionView?.reloadData()
+        }
+    }
+    
+    let defaults = UserDefaults.standard
+    
     var tableView: UITableView!
     var segmentedControl: UISegmentedControl!
     var collectionView: UICollectionView!
     
     var todaysDate: Date!
+    var month: Month!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = "Today's List"
+        
+        self.todaysDate = CurrentTime.shared.todaysDate
+        let dayOfWeek = CurrentTime.shared.dayOfWeek()
+        
+        if let todayIsNotEmpty = weeklyRoster[dayOfWeek] {
+            self.todaysChecklist = todayIsNotEmpty
+        }
+        
         let listItem1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
         let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
         let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
-        weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
+        self.weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
         
-        todaysDate = CurrentTime.shared.todaysDate
-        let dayOfWeek = CurrentTime.shared.dayOfWeek()
-                
-        if let todayIsNotEmpty = weeklyRoster[dayOfWeek] {
-            todaysChecklist = todayIsNotEmpty
+        if let userSavedMonth = self.defaults.array(forKey: "currentMonth") as? Month {
+            self.month = userSavedMonth
+            self.weeklyRoster = self.month[CurrentTime.shared.weekOfMonth() - 1]
+        } else {
+            self.month = []
         }
         
         self.implementGUI()
@@ -64,6 +80,16 @@ class TodaysViewController: UIViewController {
         self.constrainViews()
         self.styleViews()
     }
+    
+    override func performSegue(withIdentifier identifier: String, sender: Any?) {
+        guard identifier == Constants.shared.todayToListMakerSegueIdentifier else {
+            return
+        }
+        
+        let listMakerInstance = ListMakerViewController()
+        listMakerInstance.defaults = self.defaults
+        navigationController?.pushViewController(listMakerInstance, animated: true)
+    }
 }
 
 extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
@@ -90,13 +116,19 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         
         if self.todaysChecklist.isEmpty {
             cell.titleLabel?.text = "I'm empty!"
-            cell.detailLabel?.text = "Visit the Make A List screen to construct a new list."
+            cell.detailLabel?.text = "Tap me to construct a new list."
         } else {
             cell.titleLabel?.text = self.todaysChecklist[indexPath.row].title
             cell.detailLabel?.text = self.todaysChecklist[indexPath.row].detail
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if self.todaysChecklist.isEmpty {
+            performSegue(withIdentifier: Constants.shared.todayToListMakerSegueIdentifier, sender: self)
+        }
     }
 }
 
@@ -192,7 +224,7 @@ extension TodaysViewController: CustomUIKitObject {
             self.collectionView.widthAnchor.constraint(equalTo: standardWidth),
             self.collectionView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.collectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.20),
-            self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -40) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
+            self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
             ].map { $0.isActive = true }
     }
     

@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var tabBarController: UITabBarController?
+    var navigationController: UINavigationController?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
                 
@@ -22,18 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
         }
         
-        self.tabBarController = UITabBarController()
-        self.tabBarController?.viewControllers = [TodaysViewController(), ListMakerViewController(), ProfileViewController()]
+        let initialVC = TodaysViewController()
         
-        let firstItem = self.tabBarController?.tabBar.items![0]
-        let secondItem = self.tabBarController?.tabBar.items![1]
-        let thirdItem = self.tabBarController?.tabBar.items![2]
+        navigationController = UINavigationController(rootViewController: initialVC)
         
-        firstItem?.title = "Today"
-        secondItem?.title = "Make Lists"
-        thirdItem?.title = "Profile"
-        
-        windowCreated.rootViewController = tabBarController
+        windowCreated.rootViewController = navigationController
         windowCreated.makeKeyAndVisible()
         
         return true

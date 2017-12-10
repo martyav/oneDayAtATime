@@ -17,9 +17,12 @@ class ListMakerViewController: UIViewController {
     
     var userTextInput: UITextField!
     var tableView: UITableView!
+    var defaults: UserDefaults!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "List Maker"
         
         self.implementGUI()
         self.setDelegatesAndDatasources()
@@ -61,6 +64,23 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         return "Make A New List"
     }
     
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 40)
+        let view = UIView(frame: frame)
+        let button = UIButton(frame: frame)
+        button.addTarget(self, action: #selector(self.didTapSave(sender:)), for: .touchUpInside)
+        button.setTitle("Save", for: .normal)
+        button.backgroundColor = .blue
+        
+        view.addSubview(button)
+        
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return "Nut"
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.shared.listMakerCellIdentifier, for: indexPath) as! ListTableViewCell
         
@@ -77,6 +97,12 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+    }
+    
+    @objc func didTapSave(sender: UIButton) {
+        if defaults.array(forKey: "currentMonth") == nil {
+            defaults.set(["Sun": self.currentList], forKey: "currentMonth")
+        }
     }
 }
 
@@ -119,16 +145,21 @@ extension ListMakerViewController: CustomUIKitObject {
             self.userTextInput.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.8),
             self.userTextInput.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05),
             self.userTextInput.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            self.userTextInput.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
-            self.tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            self.userTextInput.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 80),
+            
+            self.tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -16),
+            self.tableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.tableView.topAnchor.constraint(equalTo: self.userTextInput.bottomAnchor, constant: 8),
             self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ].map { $0.isActive = true }
     }
     
     func styleViews() {
+        self.view.backgroundColor = .white
+        
         self.userTextInput.backgroundColor = .white
-        self.userTextInput.tintColor = .white
+        self.userTextInput.borderStyle = .roundedRect
+        self.userTextInput.tintColor = .black
         
         self.tableView.backgroundColor = .clear
         self.tableView.separatorStyle = .none
