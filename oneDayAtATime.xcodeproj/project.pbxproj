@@ -23,7 +23,7 @@
 		056ED0B11FDDCC4500C3CAA3 /* SaveAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056ED0B01FDDCC4500C3CAA3 /* SaveAlertView.swift */; };
 		05B79EB11FCD12DE00E4BCB3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB01FCD12DE00E4BCB3 /* Constants.swift */; };
 		05B79EB31FCD2C5300E4BCB3 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB21FCD2C5300E4BCB3 /* ListTableViewCell.swift */; };
-		05B79EB51FCE263000E4BCB3 /* CustomUIKitObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB41FCE263000E4BCB3 /* CustomUIKitObject.swift */; };
+		05B79EB51FCE263000E4BCB3 /* UIViewCustomizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +45,7 @@
 		056ED0B01FDDCC4500C3CAA3 /* SaveAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAlertView.swift; sourceTree = "<group>"; };
 		05B79EB01FCD12DE00E4BCB3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		05B79EB21FCD2C5300E4BCB3 /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
-		05B79EB41FCE263000E4BCB3 /* CustomUIKitObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomUIKitObject.swift; sourceTree = "<group>"; };
+		05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewCustomizing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +140,7 @@
 			children = (
 				051C5D841FCCBC23005EA454 /* Assets.xcassets */,
 				051C5D861FCCBC23005EA454 /* LaunchScreen.storyboard */,
-				05B79EB41FCE263000E4BCB3 /* CustomUIKitObject.swift */,
+				05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */,
 				056ED0B01FDDCC4500C3CAA3 /* SaveAlertView.swift */,
 				05B79EB61FCE26BE00E4BCB3 /* Custom Cells */,
 			);
@@ -232,7 +232,7 @@
 				051C5D981FCCC634005EA454 /* ListItem.swift in Sources */,
 				051AB3B61FD9F16A0077575C /* ListManager.swift in Sources */,
 				051C5D901FCCBD53005EA454 /* ProfileViewController.swift in Sources */,
-				05B79EB51FCE263000E4BCB3 /* CustomUIKitObject.swift in Sources */,
+				05B79EB51FCE263000E4BCB3 /* UIViewCustomizing.swift in Sources */,
 				056ED0AF1FDCA56100C3CAA3 /* CurrentTime.swift in Sources */,
 				051C5D9B1FCCC732005EA454 /* Week.swift in Sources */,
 				051C5D9D1FCCC91D005EA454 /* Month.swift in Sources */,

@@ -30,7 +30,11 @@ class CurrentTime {
         return dateFormatter.string(from: todaysDate)
     }
     
-    func weekDayNames() -> [String] {
+    func weekDayNamesInitials() -> [String] {
+        return self.calendar.veryShortStandaloneWeekdaySymbols
+    }
+    
+    func weekDayNamesShort() -> [String] {
         return self.calendar.shortStandaloneWeekdaySymbols
     }
 }

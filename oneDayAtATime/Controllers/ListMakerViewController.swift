@@ -36,7 +36,7 @@ class ListMakerViewController: UIViewController {
     }
     
     func registerCells() {
-         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
+         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Identifier.listMakerCell)
     }
     
     func implementGUI() {
@@ -78,7 +78,7 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.shared.listMakerCellIdentifier, for: indexPath) as! ListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.listMakerCell, for: indexPath) as! ListTableViewCell
         
         if self.currentList.isEmpty {
             cell.titleLabel?.text = "I'm a new list. I'm empty!"
@@ -97,8 +97,8 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     
     @objc func didTapSave(sender: UIButton) {
         let magicNumber = CGFloat(18.0) // need to get a relative value to prevent controls from exceeding margin...
-        let alert = UIAlertController(title: "", message: "\n\n\n\n\n", preferredStyle: .actionSheet)
-        let frame = CGRect(x: 0, y: 8, width: alert.view.bounds.size.width - magicNumber, height: 120)
+        let alert = UIAlertController(title: "", message: "\n\n\n\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
+        let frame = CGRect(x: 0, y: 8, width: alert.view.bounds.size.width - magicNumber, height: 200)
         alert.view.addSubview(SaveAlertView(frame: frame))
         let confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: nil)
         alert.addAction(confirmButton)
@@ -133,7 +133,7 @@ extension ListMakerViewController: UITextFieldDelegate {
     }
 }
 
-extension ListMakerViewController: CustomUIKitObject {
+extension ListMakerViewController: UIViewCustomizing {
     func createViews() {
         self.userTextInput = UITextField()
         self.tableView = UITableView()

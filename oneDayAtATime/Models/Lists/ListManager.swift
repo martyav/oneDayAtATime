@@ -12,9 +12,9 @@ class ListManager {
     let defaults: UserDefaults = UserDefaults.standard
     let todaysDate: Date = CurrentTime.shared.todaysDate
     private var currentDayOfWeek: String = CurrentTime.shared.dayOfWeek()
+    private var currentWeek: Week
     private var currentWeekIndex: Int = CurrentTime.shared.weekOfMonth()
     private var currentMonth: Month
-    private var currentWeek: Week
     
     init() {
         self.currentMonth = self.defaults.array(forKey: "currentMonth") as? Month ?? [Week].init(repeating: Week(), count: 4)

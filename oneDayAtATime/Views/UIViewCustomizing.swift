@@ -1,5 +1,5 @@
 //
-//  CustomUIKitObject.swift
+//  UIViewCustomizing.swift
 //  oneDayAtATime
 //
 //  Created by Marty Hernandez Avedon on 11/28/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol CustomUIKitObject {
+protocol UIViewCustomizing {
     func createViews() -> Void
     func setUpViewHeirarchy() -> Void
     func prepareForConstraints() -> Void

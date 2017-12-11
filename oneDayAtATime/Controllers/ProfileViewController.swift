@@ -48,8 +48,8 @@ class ProfileViewController: UIViewController {
     }
     
     func registerCells() {
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader)
+        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.storedListCell)
+        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Identifier.profileSectionHeader)
     }
     
     func implementGUI() {
@@ -72,7 +72,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
         var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
         
         if kind == UICollectionElementKindSectionHeader {
-            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.profileSectionHeader, for: indexPath)
+            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Identifier.profileSectionHeader, for: indexPath)
             
             if header.subviews.isEmpty {
                 let label = UILabel(frame: frame)
@@ -91,22 +91,22 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.shared.storedListCellIdentifier, for: indexPath) as! StoredListCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.storedListCell, for: indexPath) as! StoredListCollectionViewCell
         
-        cell.titleLabel.text = Constants.shared.weekDayNames[indexPath.row]
+        cell.titleLabel.text = WeekDayNames.short[indexPath.row]
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let week = indexPath.section
-        let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
+        let dayOfTheWeek = WeekDayNames.short[indexPath.row]
        // let selectedList = month[week][dayOfTheWeek]
        // self.selectedWeek = month[indexPath.section - 1]
     }
 }
 
-extension ProfileViewController: CustomUIKitObject {
+extension ProfileViewController: UIViewCustomizing {
     func createViews() {
         let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         let cellSideLength = (self.view.frame.height/8) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops

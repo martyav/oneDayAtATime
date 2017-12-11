@@ -8,17 +8,28 @@
 
 import Foundation
 
-class Constants {
-    static let shared = Constants()
-    
+struct Identifier {
     private init() {}
     
-    let listMakerCellIdentifier = "listMakerCell"
-    let storedListCellIdentifier = "storedListCell"
-    let profileSectionHeader = "profileHeader"
-    let todaySectionHeader = "todayHeader"
+    static let listMakerCell = "listMakerCell"
+    static let storedListCell = "storedListCell"
+    static let profileSectionHeader = "profileSectionHeader"
+    static let todaySectionHeader = "todaySectionHeader"
+    static let todayVCToListMakerVC = "todayVCToListMakerVC"
+}
+
+enum Key: String {
+    case week1
+    case week2
+    case week3
+    case week4
+    case week5
+    case week6
+}
+
+struct WeekDayNames {
+    private init() {}
     
-    let todayToListMakerSegueIdentifier = "todayToListMaker"
-    
-    let weekDayNames = CurrentTime.shared.weekDayNames()
+    static let short = CurrentTime.shared.weekDayNamesShort()
+    static let initials = CurrentTime.shared.weekDayNamesInitials()
 }

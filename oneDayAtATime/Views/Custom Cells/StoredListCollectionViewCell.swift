@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StoredListCollectionViewCell: UICollectionViewCell, CustomUIKitObject {
+class StoredListCollectionViewCell: UICollectionViewCell, UIViewCustomizing {
     var titleLabel: UILabel!
     
     required init?(coder aDecoder: NSCoder) {

@@ -78,9 +78,8 @@ class TodaysViewController: UIViewController {
     }
     
     func registerCells() {
-        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Constants.shared.listMakerCellIdentifier)
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Constants.shared.storedListCellIdentifier)
-        self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.todaySectionHeader)
+        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Identifier.listMakerCell)
+        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.storedListCell)
     }
     
     func implementGUI() {
@@ -92,7 +91,7 @@ class TodaysViewController: UIViewController {
     }
     
     override func performSegue(withIdentifier identifier: String, sender: Any?) {
-        guard identifier == Constants.shared.todayToListMakerSegueIdentifier else {
+        guard identifier == Identifier.todayVCToListMakerVC else {
             return
         }
         
@@ -114,12 +113,6 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         return 1
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard section == 0 else { return nil }
-        
-        return "Today's List"
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if todaysChecklist.isEmpty {
             return 1
@@ -129,7 +122,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.shared.listMakerCellIdentifier, for: indexPath) as! ListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.listMakerCell, for: indexPath) as! ListTableViewCell
         
         if self.todaysChecklist.isEmpty {
             cell.titleLabel?.text = "I'm empty!"
@@ -144,7 +137,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if self.todaysChecklist.isEmpty {
-            performSegue(withIdentifier: Constants.shared.todayToListMakerSegueIdentifier, sender: self)
+            performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
         }
     }
 }
@@ -159,9 +152,9 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.shared.storedListCellIdentifier, for: indexPath) as! StoredListCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.storedListCell, for: indexPath) as! StoredListCollectionViewCell
         
-        cell.titleLabel.text = Constants.shared.weekDayNames[indexPath.row]
+        cell.titleLabel.text = WeekDayNames.short[indexPath.row]
         
         switch self.segmentedControl.selectedSegmentIndex {
         case 0:
@@ -180,33 +173,13 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let dayOfTheWeek = Constants.shared.weekDayNames[indexPath.row]
+        self.dayOfWeek = WeekDayNames.short[indexPath.row]
         
-        todaysChecklist = weeklyRoster[dayOfTheWeek] ?? []
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let frame = CGRect(x: 8, y: 0, width: 100, height: 40)
-        var header: UICollectionReusableView = UICollectionReusableView(frame: frame)
-        
-        if kind == UICollectionElementKindSectionHeader {
-            header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Constants.shared.todaySectionHeader, for: indexPath)
-            
-            if header.subviews.isEmpty {
-                let label = UILabel(frame: frame)
-                label.clearsContextBeforeDrawing = false
-                header.addSubview(label)
-            }
-            
-            let titleLabel = header.subviews[0] as! UILabel
-            titleLabel.text = "Schedules"
-        }
-        
-        return header
+        todaysChecklist = weeklyRoster[dayOfWeek] ?? []
     }
 }
 
-extension TodaysViewController: CustomUIKitObject {
+extension TodaysViewController: UIViewCustomizing {
     func createViews() {
         self.tableView = UITableView()
         self.segmentedControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
@@ -220,7 +193,6 @@ extension TodaysViewController: CustomUIKitObject {
         collectionViewLayout.minimumInteritemSpacing = 20
         collectionViewLayout.minimumLineSpacing = 20
         collectionViewLayout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
-        collectionViewLayout.headerReferenceSize = CGSize(width: 1, height: 30)
         collectionViewLayout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
         
         self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
