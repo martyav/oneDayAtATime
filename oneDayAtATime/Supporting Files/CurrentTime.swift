@@ -13,12 +13,16 @@ class CurrentTime {
     
     private init() {}
     
-    let todaysDate = Date()
+    var todaysDate: Date {
+        get {
+            return Date()
+        }
+    }
     let dateFormatter = DateFormatter()
     let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
     
     func weekOfMonth() -> Int {
-        return self.calendar.component(.weekOfMonth, from: self.todaysDate)
+        return self.calendar.component(Calendar.Component.weekOfMonth, from: self.todaysDate)
     }
     
     func dayOfWeek() -> String {

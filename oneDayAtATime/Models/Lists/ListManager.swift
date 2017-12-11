@@ -9,18 +9,16 @@
 import Foundation
 
 class ListManager {
-    let defaults: UserDefaults
-    let todaysDate: Date
-    private var currentDayOfWeek: String
-    private var currentWeek: Week?
-    private var currentMonth: Month?
+    let defaults: UserDefaults = UserDefaults.standard
+    let todaysDate: Date = CurrentTime.shared.todaysDate
+    private var currentDayOfWeek: String = CurrentTime.shared.dayOfWeek()
+    private var currentWeekIndex: Int = CurrentTime.shared.weekOfMonth()
+    private var currentMonth: Month
+    private var currentWeek: Week
     
     init() {
-        self.defaults = UserDefaults.standard
-        self.todaysDate = CurrentTime.shared.todaysDate
-        self.currentMonth = defaults.array(forKey: "currentMonth") as? Month
-        self.currentWeek = currentMonth?[CurrentTime.shared.weekOfMonth()]
-        self.currentDayOfWeek = CurrentTime.shared.dayOfWeek()
+        self.currentMonth = self.defaults.array(forKey: "currentMonth") as? Month ?? [Week].init(repeating: Week(), count: 4)
+        self.currentWeek = self.currentMonth[self.currentWeekIndex]
     }
     
     func checkDay() -> String {

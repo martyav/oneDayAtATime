@@ -17,7 +17,14 @@ class TodaysViewController: UIViewController {
     
     var weeklyRoster: Week = [:] {
         didSet {
+            self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
             self.collectionView?.reloadData()
+        }
+    }
+    
+    var dayOfWeek: String = CurrentTime.shared.dayOfWeek() {
+        didSet {
+            self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
         }
     }
     
@@ -36,17 +43,18 @@ class TodaysViewController: UIViewController {
         self.title = "Today's List"
         
         self.todaysDate = CurrentTime.shared.todaysDate
-        let dayOfWeek = CurrentTime.shared.dayOfWeek()
         
-        if let todayIsNotEmpty = weeklyRoster[dayOfWeek] {
-            self.todaysChecklist = todayIsNotEmpty
-        }
+        self.implementGUI()
+        self.setDelegatesAndDatasources()
+        self.registerCells()
         
         let listItem1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
         let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
         let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
-        self.weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
-        self.month = [self.weeklyRoster, Week(), Week(), Week()]
+        let newWeek = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
+        
+        self.month = [newWeek, Week(), Week(), ["Mon": [listItem3]]]
+        self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
         
 //        if let savedMonth = self.manager.checkMonth() {
 //            self.month = savedMonth
@@ -59,10 +67,6 @@ class TodaysViewController: UIViewController {
 //        if let savedWeek =  self.manager.checkWeek() {
 //            self.weeklyRoster = savedWeek
 //        }
-        
-        self.implementGUI()
-        self.setDelegatesAndDatasources()
-        self.registerCells()
     }
     
     func setDelegatesAndDatasources() {
@@ -159,6 +163,19 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
         
         cell.titleLabel.text = Constants.shared.weekDayNames[indexPath.row]
         
+        switch self.segmentedControl.selectedSegmentIndex {
+        case 0:
+            cell.contentView.backgroundColor = .red
+        case 1:
+            cell.contentView.backgroundColor = .purple
+        case 2:
+            cell.contentView.backgroundColor = .blue
+        case 3:
+            cell.contentView.backgroundColor = .black
+        default:
+            break
+        }
+        
         return cell
     }
     
@@ -194,8 +211,7 @@ extension TodaysViewController: CustomUIKitObject {
         self.tableView = UITableView()
         self.segmentedControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
         self.segmentedControl.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
-        //button.addTarget(self, action: #selector(self.didTapSave(sender:)), for: .touchUpInside)
-
+        self.segmentedControl.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
         
         let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         let cellSideLength = (self.view.frame.height/5) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
