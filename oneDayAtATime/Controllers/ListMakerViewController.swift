@@ -17,13 +17,13 @@ class ListMakerViewController: UIViewController {
     
     var userTextInput: UITextField!
     var tableView: UITableView!
-    var defaults: UserDefaults!
+   // var manager: ListManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "List Maker"
-        
+                
         self.implementGUI()
         self.setDelegatesAndDatasources()
         self.registerCells()
@@ -103,6 +103,11 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         let confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: nil)
         alert.addAction(confirmButton)
         self.present(alert, animated: true, completion: nil)
+        
+       // self.manager.save(list: self.currentList, forDay: "Sun", onWeek: 0)
+        
+//        print(self.manager.checkWeek())
+//        print(self.manager.checkMonth())
         
 //        if defaults.array(forKey: "currentMonth") == nil {
 //            defaults.set(["Sun": self.currentList], forKey: "currentMonth")

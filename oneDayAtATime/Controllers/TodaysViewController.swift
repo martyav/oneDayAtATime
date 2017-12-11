@@ -21,7 +21,7 @@ class TodaysViewController: UIViewController {
         }
     }
     
-    let defaults = UserDefaults.standard
+    let manager = ListManager()
     
     var tableView: UITableView!
     var segmentedControl: UISegmentedControl!
@@ -46,13 +46,19 @@ class TodaysViewController: UIViewController {
         let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
         let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
         self.weeklyRoster = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
+        self.month = [self.weeklyRoster, Week(), Week(), Week()]
         
-        if let userSavedMonth = self.defaults.array(forKey: "currentMonth") as? Month {
-            self.month = userSavedMonth
-            self.weeklyRoster = self.month[CurrentTime.shared.weekOfMonth() - 1]
-        } else {
-            self.month = []
-        }
+//        if let savedMonth = self.manager.checkMonth() {
+//            self.month = savedMonth
+//        } else {
+//            self.month = [Week].init(repeating: Week(), count: 4)
+//            self.manager.update(month: self.month)
+//            self.manager.save(month: self.manager.checkMonth()!)
+//        }
+        
+//        if let savedWeek =  self.manager.checkWeek() {
+//            self.weeklyRoster = savedWeek
+//        }
         
         self.implementGUI()
         self.setDelegatesAndDatasources()
@@ -87,8 +93,15 @@ class TodaysViewController: UIViewController {
         }
         
         let listMakerInstance = ListMakerViewController()
-        listMakerInstance.defaults = self.defaults
+        // listMakerInstance.manager = self.manager
         navigationController?.pushViewController(listMakerInstance, animated: true)
+    }
+    
+    @objc func didTapWeekSegment(sender: UISegmentedControl) {
+        print("tapped")
+        self.weeklyRoster = self.month[sender.selectedSegmentIndex]
+        print(sender.selectedSegmentIndex)
+        dump(weeklyRoster)
     }
 }
 
@@ -180,6 +193,9 @@ extension TodaysViewController: CustomUIKitObject {
     func createViews() {
         self.tableView = UITableView()
         self.segmentedControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
+        self.segmentedControl.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
+        //button.addTarget(self, action: #selector(self.didTapSave(sender:)), for: .touchUpInside)
+
         
         let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         let cellSideLength = (self.view.frame.height/5) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
