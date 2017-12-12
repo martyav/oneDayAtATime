@@ -18,16 +18,17 @@ class CurrentTime {
             return Date()
         }
     }
+    
     let dateFormatter = DateFormatter()
     let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
     
-    func weekOfMonth() -> Int {
-        return self.calendar.component(Calendar.Component.weekOfMonth, from: self.todaysDate)
-    }
-    
-    func dayOfWeek() -> String {
+    var dayOfWeek: String {
         dateFormatter.dateFormat = "E" // E tells the formatter to return an abbreviated weekday: Sun, Mon, Tue, etc
         return dateFormatter.string(from: todaysDate)
+    }
+    
+    func weekOfMonth() -> Int {
+        return self.calendar.component(Calendar.Component.weekOfMonth, from: self.todaysDate)
     }
     
     func weekDayNamesInitials() -> [String] {

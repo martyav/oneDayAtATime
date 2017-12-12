@@ -17,13 +17,22 @@ class ListMakerViewController: UIViewController {
     
     var userTextInput: UITextField!
     var tableView: UITableView!
-   // var manager: ListManager!
+    var manager: ListManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "List Maker"
-                
+        
+        self.manager = ListManager(month: [Week(), Week(), Week(), Week()])
+        
+        do {
+            self.currentList = try manager.retrieveList(forWeek: 0, onDay: CurrentTime.shared.dayOfWeek)
+        }
+        catch {
+            print("No list yet")
+        }
+        
         self.implementGUI()
         self.setDelegatesAndDatasources()
         self.registerCells()
@@ -61,13 +70,18 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard section == 0 else { return nil }
         
-        return "Make A New List"
+        if currentList.isEmpty {
+            return "Make A New List"
+        } else {
+            return "Edit A Stored List"
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 40)
         let view = UIView(frame: frame)
         let button = UIButton(frame: frame)
+        
         button.addTarget(self, action: #selector(self.didTapSave(sender:)), for: .touchUpInside)
         button.setTitle("Save", for: .normal)
         button.backgroundColor = .blue
@@ -96,22 +110,10 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func didTapSave(sender: UIButton) {
-        let magicNumber = CGFloat(18.0) // need to get a relative value to prevent controls from exceeding margin...
-        let alert = UIAlertController(title: "", message: "\n\n\n\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
-        let frame = CGRect(x: 0, y: 8, width: alert.view.bounds.size.width - magicNumber, height: 200)
-        alert.view.addSubview(SaveAlertView(frame: frame))
-        let confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: nil)
-        alert.addAction(confirmButton)
+        let alert = SaveAlertViewController(title: "", message: "\n\n\n\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
+        alert.manager = self.manager
+        alert.list = self.currentList
         self.present(alert, animated: true, completion: nil)
-        
-       // self.manager.save(list: self.currentList, forDay: "Sun", onWeek: 0)
-        
-//        print(self.manager.checkWeek())
-//        print(self.manager.checkMonth())
-        
-//        if defaults.array(forKey: "currentMonth") == nil {
-//            defaults.set(["Sun": self.currentList], forKey: "currentMonth")
-//        }
     }
 }
 

@@ -23,8 +23,6 @@ enum Key: String {
     case week2
     case week3
     case week4
-    case week5
-    case week6
 }
 
 struct WeekDayNames {

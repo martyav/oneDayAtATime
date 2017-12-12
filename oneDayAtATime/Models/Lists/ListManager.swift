@@ -8,31 +8,127 @@
 
 import Foundation
 
+enum ScheduleError: Error {
+    case monthIsFull
+    case dayHasNoValidList // day == nil
+    case weekHasNoValidDays // all keys are nil -- week is empty
+    case weekDoesNotExist // index exceeds month.count
+    case monthHasNoValidWeeks // all indices are nil
+}
+
 class ListManager {
-    let defaults: UserDefaults = UserDefaults.standard
-    let todaysDate: Date = CurrentTime.shared.todaysDate
-    private var currentDayOfWeek: String = CurrentTime.shared.dayOfWeek()
-    private var currentWeek: Week
-    private var currentWeekIndex: Int = CurrentTime.shared.weekOfMonth()
-    private var currentMonth: Month
+    private var month: Month
     
-    init() {
-        self.currentMonth = self.defaults.array(forKey: "currentMonth") as? Month ?? [Week].init(repeating: Week(), count: 4)
-        self.currentWeek = self.currentMonth[self.currentWeekIndex]
+    init(month: Month) {
+        self.month = month
     }
     
-    func checkDay() -> String {
-        return self.currentDayOfWeek
+    private func isIndexValid(_ week: Int) -> Bool {
+        return month.count >= week && week > -1
     }
     
-    func checkWeek() -> Week? {
-        return self.currentWeek
+    func retrieveList(forWeek week: Int, onDay day: String) throws -> Checklist {
+        guard !month.isEmpty else {
+            throw ScheduleError.monthHasNoValidWeeks
+        }
+        
+        guard isIndexValid(week) else {
+            throw ScheduleError.weekDoesNotExist
+        }
+        
+        guard !month[week].isEmpty else {
+            throw ScheduleError.weekHasNoValidDays
+        }
+        
+        guard let foundList = month[week][day] else {
+            throw ScheduleError.dayHasNoValidList
+        }
+        
+        return foundList
     }
     
-    func checkMonth() -> Month? {
-        return self.currentMonth
+    func retrieve(week: Int) throws -> Week {
+        guard !month.isEmpty else {
+            throw ScheduleError.monthHasNoValidWeeks
+        }
+        
+        guard isIndexValid(week) else {
+            throw ScheduleError.weekDoesNotExist
+        }
+        
+        return month[week]
     }
     
+    func add(week: Week) throws {
+        guard month.count <= 4 else {
+            throw ScheduleError.monthIsFull
+        }
+        
+        month.append(week)
+    }
+    
+    func updateMonth(forWeek index: Int, withValue value: Week) {
+        guard isIndexValid(index) || !month.isEmpty else {
+            month.insert(value, at: index)
+            return
+        }
+        
+        month[index] = value
+    }
+    
+    func updateWeek(atIndex index: Int, forDay day: String, withValue value: Checklist) {
+        do {
+            _ = try retrieve(week: index)
+            
+            if let dayExists = month[index][day] {
+                print("exists already.")
+                month[index][day] = value
+            } else {
+                print("does not exist already.")
+                month[index][day] = value
+            }
+        }
+            
+        catch {
+            updateMonth(forWeek: index, withValue: Week())
+            updateWeek(atIndex: index, forDay: day, withValue: value)
+        }
+    }
+    
+    func deleteList(forWeek week: Int, onDay day: String) {
+        guard isIndexValid(week) else {
+            return
+        }
+        
+        month[week][day] = nil
+    }
+}
+
+//class ListManager {
+//    let defaults: UserDefaults = UserDefaults.standard
+//    let todaysDate: Date = CurrentTime.shared.todaysDate
+//    private var currentDayOfWeek: String = CurrentTime.shared.dayOfWeek()
+//    private var currentWeek: Week
+//    private var currentWeekIndex: Int = CurrentTime.shared.weekOfMonth()
+//    private var currentMonth: Month
+//
+//    init() {
+//        self.currentMonth = self.defaults.array(forKey: "currentMonth") as? Month ?? [Week].init(repeating: Week(), count: 4)
+//        self.currentWeek = self.currentMonth[self.currentWeekIndex]
+//    }
+//
+//    func checkDay() -> String {
+//        return self.currentDayOfWeek
+//    }
+//
+//    func checkWeek() -> Week? {
+//        return self.currentWeek
+//    }
+//
+//    func checkMonth() -> Month? {
+//        return self.currentMonth
+//    }
+
 //    func update(list: Checklist) {
 //        if self.currentWeek == nil {
 //            self.currentWeek = Week()
@@ -107,4 +203,5 @@ class ListManager {
 //        self.save(week: self.currentWeek!, atIndex: index)
 //        self.save(month: self.currentMonth!)
 //    }
-}
+//}
+

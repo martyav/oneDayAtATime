@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SaveAlertView: UIView, UIViewCustomizing {
+class SaveAlertGUI: UIView, UIViewCustomizing {
     var contentView: UIView!
     var weekLabel: UILabel!
     var segmentedControlWeek: UISegmentedControl!
@@ -36,7 +36,7 @@ class SaveAlertView: UIView, UIViewCustomizing {
     func createViews() {
         self.contentView = UIView()
         self.weekLabel = UILabel()
-        self.segmentedControlWeek = UISegmentedControl(items: ["First", "Second", "Third", "Fourth", "Fifth", "Sixth"])
+        self.segmentedControlWeek = UISegmentedControl(items: ["One", "Two", "Three", "Four"])
         self.dayLabel = UILabel()
         self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
     }

@@ -22,13 +22,13 @@ class TodaysViewController: UIViewController {
         }
     }
     
-    var dayOfWeek: String = CurrentTime.shared.dayOfWeek() {
+    var dayOfWeek: String = CurrentTime.shared.dayOfWeek {
         didSet {
             self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
         }
     }
     
-    let manager = ListManager()
+//    let manager = ListManager()
     
     var tableView: UITableView!
     var segmentedControl: UISegmentedControl!
