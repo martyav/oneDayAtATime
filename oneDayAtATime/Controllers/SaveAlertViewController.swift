@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SaveAlertViewController: UIAlertController {
+class SaveAlertViewController: UIAlertController { // we can't subclass from UIAlertController tho -- follow https://github.com/JSSAlertView/JSSAlertView/blob/master/JSSAlertView/Classes/JSSAlertView.swift for a roadmap of how to handle this
     var alertControls: SaveAlertGUI!
     var confirmButton: UIAlertAction!
     var manager: ListManager!
@@ -24,15 +24,25 @@ class SaveAlertViewController: UIAlertController {
         self.view.addSubview(alertControls)
         
         self.confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: {(alert: UIAlertAction) in
+            
             let weekIndex = self.alertControls.segmentedControlWeek.selectedSegmentIndex
             let dayIndex = self.alertControls.segmentedControlDay.selectedSegmentIndex
             let dayOfWeek = WeekDayNames.short[dayIndex]
-            
+
             self.manager.updateWeek(atIndex: weekIndex, forDay: dayOfWeek, withValue: self.list)
-            
+            let updatedWeek = try! self.manager.retrieve(week: weekIndex)
+            self.manager.updateMonth(forWeek: weekIndex, withValue: updatedWeek)
+
             print("Week \(weekIndex), \(dayOfWeek)")
-            do { try print(self.manager.retrieveList(forWeek: weekIndex, onDay: dayOfWeek)) }
-            catch { print("Nice try") }
+            self.manager.save()
+            do {
+                try print(self.manager.retrieveList(forWeek: weekIndex, onDay: dayOfWeek))
+                print(self.manager.displayStoredMonth())
+                print(self.manager.displayCurrentMonth())
+            }
+            catch {
+                print("Nice try")
+            }
         })
         
         confirmButton.isEnabled = false

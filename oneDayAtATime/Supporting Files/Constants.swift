@@ -19,10 +19,7 @@ struct Identifier {
 }
 
 enum Key: String {
-    case week1
-    case week2
-    case week3
-    case week4
+    case month
 }
 
 struct WeekDayNames {

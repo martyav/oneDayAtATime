@@ -18,13 +18,30 @@ enum ScheduleError: Error {
 
 class ListManager {
     private var month: Month
+    private var storage = StorageManager.defaults
     
     init(month: Month) {
         self.month = month
     }
     
+    init() {
+        self.month = self.storage.retrieve()
+    }
+    
     private func isIndexValid(_ week: Int) -> Bool {
-        return month.count >= week && week > -1
+        return self.month.count >= week && week > -1
+    }
+    
+    func save() {
+        self.storage.save(value: self.month)
+    }
+    
+    func displayCurrentMonth() -> Month {
+        return self.month
+    }
+    
+    func displayStoredMonth() -> Month {
+        return self.storage.retrieve()
     }
     
     func retrieveList(forWeek week: Int, onDay day: String) throws -> Checklist {
