@@ -23,9 +23,7 @@ class ListMakerViewController: UIViewController {
         super.viewDidLoad()
         
         self.title = "List Maker"
-        
-        self.manager = ListManager(month: [Week(), Week(), Week(), Week()])
-        
+                
         do {
             self.currentList = try manager.retrieveList(forWeek: 0, onDay: CurrentTime.shared.dayOfWeek)
         }

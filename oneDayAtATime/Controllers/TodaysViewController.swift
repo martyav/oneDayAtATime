@@ -28,7 +28,7 @@ class TodaysViewController: UIViewController {
         }
     }
     
-//    let manager = ListManager()
+    let manager = ListManager()
     
     var tableView: UITableView!
     var segmentedControl: UISegmentedControl!
@@ -48,25 +48,15 @@ class TodaysViewController: UIViewController {
         self.setDelegatesAndDatasources()
         self.registerCells()
         
-        let listItem1 = ListItem(title: "Hello", detail: "world", checkedOff: false)
-        let listItem2 = ListItem(title: "It's Tuesday!", detail: "Hooray", checkedOff: false)
-        let listItem3 = ListItem(title: "Cats are great", detail: "🐱", checkedOff: false)
-        let newWeek = ["Mon": [listItem1], "Tue": [listItem2], "Wed": [listItem3, listItem3, listItem3]]
-        
-        self.month = [newWeek, Week(), Week(), ["Mon": [listItem3]]]
+        self.month = self.manager.returnCurrentMonth()
         self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-//        if let savedMonth = self.manager.checkMonth() {
-//            self.month = savedMonth
-//        } else {
-//            self.month = [Week].init(repeating: Week(), count: 4)
-//            self.manager.update(month: self.month)
-//            self.manager.save(month: self.manager.checkMonth()!)
-//        }
-        
-//        if let savedWeek =  self.manager.checkWeek() {
-//            self.weeklyRoster = savedWeek
-//        }
+        self.month = self.manager.returnCurrentMonth()
+        self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
     }
     
     func setDelegatesAndDatasources() {
@@ -96,7 +86,7 @@ class TodaysViewController: UIViewController {
         }
         
         let listMakerInstance = ListMakerViewController()
-        // listMakerInstance.manager = self.manager
+        listMakerInstance.manager = self.manager
         navigationController?.pushViewController(listMakerInstance, animated: true)
     }
     

@@ -36,11 +36,11 @@ class ListManager {
         self.storage.save(value: self.month)
     }
     
-    func displayCurrentMonth() -> Month {
+    func returnCurrentMonth() -> Month {
         return self.month
     }
     
-    func displayStoredMonth() -> Month {
+    func returnStoredMonth() -> Month {
         return self.storage.retrieve()
     }
     
