@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ListTableViewCell: UITableViewCell, UIViewCustomizing {
+class ListTableViewCell: UITableViewCell, ReuseIdentifying {
     var titleLabel: UILabel!
     var detailLabel: UILabel!
     
@@ -18,18 +18,18 @@ class ListTableViewCell: UITableViewCell, UIViewCustomizing {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+        
         createViews()
         setUpViewHeirarchy()
         prepareForConstraints()
         constrainViews()
         styleViews()
     }
+}
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    
+// MARK: - UIViewCustomizing
+
+extension ListTableViewCell: UIViewCustomizing {
     func createViews() {
         self.titleLabel = UILabel()
         self.detailLabel = UILabel()

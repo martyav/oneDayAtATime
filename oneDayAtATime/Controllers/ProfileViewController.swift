@@ -48,7 +48,7 @@ class ProfileViewController: UIViewController {
     }
     
     func registerCells() {
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.storedListCell)
+        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier)
         self.collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: Identifier.profileSectionHeader)
     }
     
@@ -91,7 +91,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.storedListCell, for: indexPath) as! StoredListCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier, for: indexPath) as! StoredListCollectionViewCell
         
         cell.titleLabel.text = WeekDayNames.short[indexPath.row]
         

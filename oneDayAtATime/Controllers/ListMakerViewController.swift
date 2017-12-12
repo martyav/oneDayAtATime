@@ -43,7 +43,7 @@ class ListMakerViewController: UIViewController {
     }
     
     func registerCells() {
-         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Identifier.listMakerCell)
+         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.reuseIdentifier)
     }
     
     func implementGUI() {
@@ -54,6 +54,8 @@ class ListMakerViewController: UIViewController {
         self.styleViews()
     }
 }
+
+// MARK: - UITableViewDelegate and UITableViewDataSource
 
 extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -90,7 +92,7 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.listMakerCell, for: indexPath) as! ListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         
         if self.currentList.isEmpty {
             cell.titleLabel?.text = "I'm a new list. I'm empty!"
@@ -115,6 +117,8 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - UITextFieldDelegate
+
 extension ListMakerViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         if let userTyped = self.userTextInput.text {
@@ -132,6 +136,8 @@ extension ListMakerViewController: UITextFieldDelegate {
         return true
     }
 }
+
+// MARK: - UIViewCustomizing
 
 extension ListMakerViewController: UIViewCustomizing {
     func createViews() {

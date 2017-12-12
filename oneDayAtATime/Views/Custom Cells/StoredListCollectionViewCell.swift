@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StoredListCollectionViewCell: UICollectionViewCell, UIViewCustomizing {
+class StoredListCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
     var titleLabel: UILabel!
     
     required init?(coder aDecoder: NSCoder) {
@@ -24,11 +24,11 @@ class StoredListCollectionViewCell: UICollectionViewCell, UIViewCustomizing {
         constrainViews()
         styleViews()
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
+}
+
+// MARK: - UIViewCustomizing
+
+extension StoredListCollectionViewCell: UIViewCustomizing {
     func createViews() {
         self.titleLabel = UILabel()
     }

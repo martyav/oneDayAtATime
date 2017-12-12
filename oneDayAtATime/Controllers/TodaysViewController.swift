@@ -68,8 +68,8 @@ class TodaysViewController: UIViewController {
     }
     
     func registerCells() {
-        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: Identifier.listMakerCell)
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: Identifier.storedListCell)
+        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.reuseIdentifier)
+        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier)
     }
     
     func implementGUI() {
@@ -98,6 +98,8 @@ class TodaysViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate and UITableViewDataSource
+
 extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -112,7 +114,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Identifier.listMakerCell, for: indexPath) as! ListTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         
         if self.todaysChecklist.isEmpty {
             cell.titleLabel?.text = "I'm empty!"
@@ -132,6 +134,8 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+// MARK: - UICollectionViewDelegate and UICollectionViewDataSource
+
 extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 7
@@ -142,7 +146,7 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifier.storedListCell, for: indexPath) as! StoredListCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier, for: indexPath) as! StoredListCollectionViewCell
         
         cell.titleLabel.text = WeekDayNames.short[indexPath.row]
         
@@ -168,6 +172,8 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
         todaysChecklist = weeklyRoster[dayOfWeek] ?? []
     }
 }
+
+// MARK: - UIViewCustomizing
 
 extension TodaysViewController: UIViewCustomizing {
     func createViews() {

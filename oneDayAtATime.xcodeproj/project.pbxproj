@@ -27,6 +27,7 @@
 		05F33A6C1FDF37DC001D9C32 /* SaveAlertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F33A6B1FDF37DC001D9C32 /* SaveAlertViewController.swift */; };
 		05F33A6E1FDF41CB001D9C32 /* UISegmentedControl+hasSelectedSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F33A6D1FDF41CB001D9C32 /* UISegmentedControl+hasSelectedSegment.swift */; };
 		05F33A751FDF7878001D9C32 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F33A741FDF7878001D9C32 /* StorageManager.swift */; };
+		05F33A771FDFD3BC001D9C32 /* ReuseIdentifying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05F33A761FDFD3BC001D9C32 /* ReuseIdentifying.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		05F33A6B1FDF37DC001D9C32 /* SaveAlertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAlertViewController.swift; sourceTree = "<group>"; };
 		05F33A6D1FDF41CB001D9C32 /* UISegmentedControl+hasSelectedSegment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISegmentedControl+hasSelectedSegment.swift"; sourceTree = "<group>"; };
 		05F33A741FDF7878001D9C32 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		05F33A761FDFD3BC001D9C32 /* ReuseIdentifying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReuseIdentifying.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				05F33A701FDF41FD001D9C32 /* Protocols */,
-				05F33A6F1FDF41DE001D9C32 /* Extensions */,
+				05F33A6F1FDF41DE001D9C32 /* UIKit Extensions */,
 				051C5D7B1FCCBC23005EA454 /* AppDelegate.swift */,
 				05F33A741FDF7878001D9C32 /* StorageManager.swift */,
 				05B79EB01FCD12DE00E4BCB3 /* Constants.swift */,
@@ -165,18 +167,19 @@
 			path = "Custom Cells";
 			sourceTree = "<group>";
 		};
-		05F33A6F1FDF41DE001D9C32 /* Extensions */ = {
+		05F33A6F1FDF41DE001D9C32 /* UIKit Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				05F33A6D1FDF41CB001D9C32 /* UISegmentedControl+hasSelectedSegment.swift */,
 			);
-			path = Extensions;
+			path = "UIKit Extensions";
 			sourceTree = "<group>";
 		};
 		05F33A701FDF41FD001D9C32 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
 				05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */,
+				05F33A761FDFD3BC001D9C32 /* ReuseIdentifying.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				051C5D981FCCC634005EA454 /* ListItem.swift in Sources */,
 				051AB3B61FD9F16A0077575C /* ListManager.swift in Sources */,
 				051C5D901FCCBD53005EA454 /* ProfileViewController.swift in Sources */,
+				05F33A771FDFD3BC001D9C32 /* ReuseIdentifying.swift in Sources */,
 				05B79EB51FCE263000E4BCB3 /* UIViewCustomizing.swift in Sources */,
 				056ED0AF1FDCA56100C3CAA3 /* CurrentTime.swift in Sources */,
 				051C5D9B1FCCC732005EA454 /* Week.swift in Sources */,

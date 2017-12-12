@@ -11,8 +11,6 @@ import Foundation
 struct Identifier {
     private init() {}
     
-    static let listMakerCell = "listMakerCell"
-    static let storedListCell = "storedListCell"
     static let profileSectionHeader = "profileSectionHeader"
     static let todaySectionHeader = "todaySectionHeader"
     static let todayVCToListMakerVC = "todayVCToListMakerVC"
