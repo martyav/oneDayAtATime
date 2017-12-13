@@ -11,24 +11,23 @@ import UIKit
 class TodaysViewController: UIViewController {
     var todaysChecklist: Checklist = [] {
         didSet {
-            self.tableView?.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
 
     var weeklyRoster: Week = [:] {
-        willSet {
-            self.collectionView?.reloadData()
-        }
         didSet {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+            
             self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
         }
     }
     
-    var dayOfWeek: String = CurrentTime.shared.dayOfWeek {
-        didSet {
-            self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
-        }
-    }
+    var dayOfWeek: String = CurrentTime.shared.dayOfWeek
     
     let manager = ListManager()
     
@@ -122,19 +121,19 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
+        print("made cell")
         
         if self.todaysChecklist.isEmpty {
+            print("empty")
             cell.titleLabel?.text = "I'm empty!"
             cell.detailLabel?.text = "Tap me to construct a new list."
         } else {
+            print("full")
             cell.titleLabel?.text = self.todaysChecklist[indexPath.row].title
             cell.detailLabel?.text = self.todaysChecklist[indexPath.row].detail
+            print("??")
             
-            if self.todaysChecklist[indexPath.row].checkedOff {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
+            self.checkOff(cell: cell, at: indexPath.row)
         }
         
         return cell
@@ -145,8 +144,22 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         if self.todaysChecklist.isEmpty {
             performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
         } else {
-            self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
+            if let cell = tableView.cellForRow(at: indexPath) {
+                self.month[self.segmentedControl.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff = !self.month[self.segmentedControl.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff
+                self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
+                // self.todaysChecklist = self.weeklyRoster[self.dayOfWeek]!
+                print( self.weeklyRoster[self.dayOfWeek]![indexPath.row].checkedOff)
+                self.checkOff(cell: cell, at: indexPath.row)
                 print(self.todaysChecklist[indexPath.row].checkedOff)
+            }
+        }
+    }
+    
+    func checkOff(cell: UITableViewCell, at index: Int) {
+        if self.weeklyRoster[self.dayOfWeek]![index].checkedOff {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
         }
     }
 }
@@ -185,8 +198,7 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.dayOfWeek = WeekDayNames.short[indexPath.row]
-        
-        self.todaysChecklist = weeklyRoster[dayOfWeek] ?? []
+        self.todaysChecklist = self.month[self.segmentedControl.selectedSegmentIndex][self.dayOfWeek] ?? []
     }
 }
 
