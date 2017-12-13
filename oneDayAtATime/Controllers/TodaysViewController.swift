@@ -10,11 +10,11 @@ import UIKit
 
 class TodaysViewController: UIViewController {
     var todaysChecklist: Checklist = [] {
-        willSet {
+        didSet {
             self.tableView?.reloadData()
         }
     }
-    
+
     var weeklyRoster: Week = [:] {
         willSet {
             self.collectionView?.reloadData()
@@ -142,11 +142,11 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("tapped")
-        self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
-        print(self.todaysChecklist[indexPath.row].checkedOff)
-        
         if self.todaysChecklist.isEmpty {
             performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
+        } else {
+            self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
+                print(self.todaysChecklist[indexPath.row].checkedOff)
         }
     }
 }
