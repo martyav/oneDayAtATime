@@ -11,7 +11,9 @@ import Foundation
 class CurrentTime {
     static let shared = CurrentTime()
     
-    private init() {}
+    private init() {
+        self.dateFormatter.locale = Locale.autoupdatingCurrent
+    }
     
     var todaysDate: Date {
         get {
@@ -31,11 +33,21 @@ class CurrentTime {
         return self.calendar.component(Calendar.Component.weekOfMonth, from: self.todaysDate)
     }
     
+    func appleWtf() {
+        print(self.calendar.shortStandaloneWeekdaySymbols == self.calendar.standaloneWeekdaySymbols)
+    }
+    
     func weekDayNamesInitials() -> [String] {
         return self.calendar.veryShortStandaloneWeekdaySymbols
     }
     
     func weekDayNamesShort() -> [String] {
         return self.calendar.shortStandaloneWeekdaySymbols
+    }
+    
+    func weekDayNamesLong() -> [String] {
+        // there is a bizarre bug with standalone symbols -- it is identical to shortStandaloneWeekdaySymbols
+       // return self.calendar.standaloneWeekdaySymbols
+        return ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     }
 }

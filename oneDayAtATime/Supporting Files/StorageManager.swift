@@ -18,7 +18,10 @@ class StorageManager {
     }
     
     func retrieve() -> Month {
-        let encoded = self.userDefaults.object(forKey: Key.month.rawValue) as! Data
+        guard let encoded = self.userDefaults.object(forKey: Key.month.rawValue) as? Data else {
+            self.save(value: [Week(), Week(), Week(), Week()])
+            return self.retrieve()
+        }
         do {
             let savedMonth = try PropertyListDecoder().decode(Month.self, from: encoded)
             return savedMonth
@@ -28,6 +31,7 @@ class StorageManager {
             self.save(value: [Week(), Week(), Week(), Week()])
             return self.retrieve()
         }
+        
     }
     
     func save(value: Month) {

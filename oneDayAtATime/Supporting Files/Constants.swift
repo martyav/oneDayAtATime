@@ -23,6 +23,7 @@ enum Key: String {
 struct WeekDayNames {
     private init() {}
     
+    static let long = CurrentTime.shared.weekDayNamesLong()
     static let short = CurrentTime.shared.weekDayNamesShort()
     static let initials = CurrentTime.shared.weekDayNamesInitials()
 }

@@ -34,7 +34,7 @@ class SaveAlertViewController: UIAlertController { // we can't subclass from UIA
             self.manager.updateMonth(forWeek: weekIndex, withValue: updatedWeek)
 
             print("Week \(weekIndex), \(dayOfWeek)")
-            self.manager.save()
+
             do {
                 try print(self.manager.retrieveList(forWeek: weekIndex, onDay: dayOfWeek))
                 print(self.manager.returnStoredMonth())

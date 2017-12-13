@@ -156,7 +156,7 @@ extension ListMakerViewController: UIViewCustomizing {
     }
     
     func constrainViews() {
-        _ = [
+    [
             self.userTextInput.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.8),
             self.userTextInput.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05),
             self.userTextInput.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
@@ -166,7 +166,7 @@ extension ListMakerViewController: UIViewCustomizing {
             self.tableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.tableView.topAnchor.constraint(equalTo: self.userTextInput.bottomAnchor, constant: 8),
             self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-        ].map { $0.isActive = true }
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {

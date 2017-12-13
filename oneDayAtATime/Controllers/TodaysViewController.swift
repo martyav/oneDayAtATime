@@ -10,15 +10,17 @@ import UIKit
 
 class TodaysViewController: UIViewController {
     var todaysChecklist: Checklist = [] {
-        didSet {
+        willSet {
             self.tableView?.reloadData()
         }
     }
     
     var weeklyRoster: Week = [:] {
+        willSet {
+            self.collectionView?.reloadData()
+        }
         didSet {
             self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
-            self.collectionView?.reloadData()
         }
     }
     
@@ -113,6 +115,11 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let index = WeekDayNames.short.index(of: self.dayOfWeek)!
+        return WeekDayNames.long[index]
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         
@@ -122,12 +129,22 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             cell.titleLabel?.text = self.todaysChecklist[indexPath.row].title
             cell.detailLabel?.text = self.todaysChecklist[indexPath.row].detail
+            
+            if self.todaysChecklist[indexPath.row].checkedOff {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
         }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("tapped")
+        self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
+        print(self.todaysChecklist[indexPath.row].checkedOff)
+        
         if self.todaysChecklist.isEmpty {
             performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
         }
@@ -169,7 +186,7 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.dayOfWeek = WeekDayNames.short[indexPath.row]
         
-        todaysChecklist = weeklyRoster[dayOfWeek] ?? []
+        self.todaysChecklist = weeklyRoster[dayOfWeek] ?? []
     }
 }
 
@@ -210,7 +227,7 @@ extension TodaysViewController: UIViewCustomizing {
         let standardWidth = self.view.widthAnchor
         let standardXPosition = self.view.centerXAnchor
         
-        _ = [
+        [
             self.tableView.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
             self.tableView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
@@ -225,14 +242,14 @@ extension TodaysViewController: UIViewCustomizing {
             self.collectionView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.collectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.20),
             self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
-            ].map { $0.isActive = true }
+            ].forEach { $0.isActive = true }
     }
     
     func styleViews() {
         self.view.backgroundColor = .white
         
         self.tableView.backgroundColor = .clear
-        self.tableView.separatorStyle = .none
+        // self.tableView.separatorStyle = .none
         
         self.segmentedControl.backgroundColor = .white
         self.segmentedControl.apportionsSegmentWidthsByContent = true
