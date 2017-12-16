@@ -89,6 +89,7 @@ class TodaysViewController: UIViewController {
     }
     
     func updateTodaysChecklist() {
+        print("\(self.weeklyRosterIndex) \(self.dayOfWeek) \(self.month.count)")
         self.todaysChecklist = self.month[self.weeklyRosterIndex][self.dayOfWeek] ?? []
     }
     
@@ -111,11 +112,16 @@ class TodaysViewController: UIViewController {
     
     @objc func didTapPullOut(sender: UIButton) {
         print("pullout tapped")
-        NSLayoutConstraint.deactivate(self.dayAndWeekControlView.constraints)
+        
+        
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
         
         [
-            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.tableView.bottomAnchor),
             self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ].forEach { $0.isActive = true }
@@ -134,6 +140,7 @@ class TodaysViewController: UIViewController {
     
     @objc func didTapDaySegment(sender: UISegmentedControl) {
         print("day segment tapped")
+        print(sender.selectedSegmentIndex)
         self.dayOfWeek = WeekDayNames.short[sender.selectedSegmentIndex]
     }
 }
@@ -186,8 +193,6 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         } else {
             if let cell = tableView.cellForRow(at: indexPath) {
                 self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff = !self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff
-               // self.weeklyRosterIndex = self.segmentedControlWeek.selectedSegmentIndex
-                // self.todaysChecklist = self.weeklyRoster[self.dayOfWeek]!
                 print( self.month[self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff)
                 self.checkOff(cell: cell, at: indexPath.row)
                 print(self.todaysChecklist[indexPath.row].checkedOff)
@@ -213,9 +218,9 @@ extension TodaysViewController: UIViewCustomizing {
         
         self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = WeekDayNames.short.index(of: self.dayOfWeek)!
         self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
-        self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
-        self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
-        self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchUpInside)
+        self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchDragInside)
     }
     
     func setUpViewHeirarchy() {
@@ -238,8 +243,8 @@ extension TodaysViewController: UIViewCustomizing {
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
             self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             
-            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: standardWidth),
-            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: standardWidth, constant: 100),
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ].forEach { $0.isActive = true }

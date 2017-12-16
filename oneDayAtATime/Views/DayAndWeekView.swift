@@ -36,29 +36,29 @@ class DayAndWeekView: UIView, UIViewCustomizing {
     
     func createViews() {
         self.contentView = UIView()
+        self.pullOutButton = UIButton()
         self.weekLabel = UILabel()
         self.segmentedControlWeek = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
         self.dayLabel = UILabel()
         self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
-        self.pullOutButton = UIButton(type: .roundedRect)
     }
     
     func setUpViewHeirarchy() {
-        self.addSubview(contentView)
+        self.addSubview(self.contentView)
+        self.addSubview(self.pullOutButton)
         self.contentView.addSubview(self.weekLabel)
         self.contentView.addSubview(self.segmentedControlWeek)
         self.contentView.addSubview(self.dayLabel)
         self.contentView.addSubview(self.segmentedControlDay)
-        self.contentView.addSubview(self.pullOutButton)
     }
     
     func prepareForConstraints() {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
+        self.pullOutButton.translatesAutoresizingMaskIntoConstraints = false
         self.weekLabel.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlWeek.translatesAutoresizingMaskIntoConstraints = false
         self.dayLabel.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlDay.translatesAutoresizingMaskIntoConstraints = false
-        self.pullOutButton.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
@@ -66,12 +66,13 @@ class DayAndWeekView: UIView, UIViewCustomizing {
             self.contentView.topAnchor.constraint(equalTo: self.topAnchor),
             self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             self.contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -88),
+            self.contentView.trailingAnchor.constraint(equalTo: self.pullOutButton.leadingAnchor, constant: -4),
             
+            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 4),
             self.pullOutButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
-            self.pullOutButton.widthAnchor.constraint(equalToConstant: 88),
+            self.pullOutButton.widthAnchor.constraint(equalToConstant: 100),
+            self.pullOutButton.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             self.pullOutButton.heightAnchor.constraint(equalToConstant: 44),
-            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             
             self.weekLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 6),
             self.weekLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8),
