@@ -8,12 +8,13 @@
 
 import UIKit
 
-class SaveAlertGUI: UIView, UIViewCustomizing {
+class DayAndWeekView: UIView, UIViewCustomizing {
     var contentView: UIView!
     var weekLabel: UILabel!
     var segmentedControlWeek: UISegmentedControl!
     var dayLabel: UILabel!
     var segmentedControlDay: UISegmentedControl!
+    var pullOutButton: UIButton!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -35,14 +36,16 @@ class SaveAlertGUI: UIView, UIViewCustomizing {
     
     func createViews() {
         self.contentView = UIView()
+        self.pullOutButton = UIButton()
         self.weekLabel = UILabel()
-        self.segmentedControlWeek = UISegmentedControl(items: ["One", "Two", "Three", "Four"])
+        self.segmentedControlWeek = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
         self.dayLabel = UILabel()
         self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
     }
     
     func setUpViewHeirarchy() {
-        self.addSubview(contentView)
+        self.addSubview(self.contentView)
+        self.addSubview(self.pullOutButton)
         self.contentView.addSubview(self.weekLabel)
         self.contentView.addSubview(self.segmentedControlWeek)
         self.contentView.addSubview(self.dayLabel)
@@ -51,6 +54,7 @@ class SaveAlertGUI: UIView, UIViewCustomizing {
     
     func prepareForConstraints() {
         self.contentView.translatesAutoresizingMaskIntoConstraints = false
+        self.pullOutButton.translatesAutoresizingMaskIntoConstraints = false
         self.weekLabel.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlWeek.translatesAutoresizingMaskIntoConstraints = false
         self.dayLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -62,7 +66,13 @@ class SaveAlertGUI: UIView, UIViewCustomizing {
             self.contentView.topAnchor.constraint(equalTo: self.topAnchor),
             self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             self.contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.contentView.trailingAnchor.constraint(equalTo: self.pullOutButton.leadingAnchor),
+            
+            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
+            self.pullOutButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+            self.pullOutButton.widthAnchor.constraint(equalToConstant: 100),
+            self.pullOutButton.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.pullOutButton.heightAnchor.constraint(equalToConstant: 44),
             
             self.weekLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 6),
             self.weekLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8),
@@ -87,11 +97,27 @@ class SaveAlertGUI: UIView, UIViewCustomizing {
     }
     
     func styleViews() {
+        let font = UIFont(name: "OleoScript-Regular", size: 20)
+        self.contentView.layer.cornerRadius = 30
+        self.contentView.backgroundColor = .blue
+        self.contentView.clipsToBounds = true
         self.weekLabel.text = "Choose week:"
+        self.weekLabel.textColor = .white
+        self.segmentedControlWeek.backgroundColor = .white
+        self.segmentedControlWeek.tintColor = .blue
+        self.segmentedControlWeek.setTitleTextAttributes([NSAttributedStringKey.font: font!], for: .normal)
         self.segmentedControlWeek.apportionsSegmentWidthsByContent = true
         self.segmentedControlWeek.isEnabled = true
         self.dayLabel.text = "Choose day of week:"
+        self.dayLabel.textColor = .white
+        self.segmentedControlDay.backgroundColor = .white
+        self.segmentedControlDay.tintColor = .blue
+        self.segmentedControlDay.setTitleTextAttributes([NSAttributedStringKey.font: font!], for: .normal)
         self.segmentedControlDay.apportionsSegmentWidthsByContent = true
         self.segmentedControlDay.isEnabled = true
+        self.pullOutButton.backgroundColor = .blue
+        self.pullOutButton.setTitle("Switch day?", for: .normal)
+        self.pullOutButton.setTitleColor(.white, for: .normal)
+        self.pullOutButton.isEnabled = true
     }
 }

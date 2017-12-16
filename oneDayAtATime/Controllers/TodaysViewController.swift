@@ -11,31 +11,33 @@ import UIKit
 class TodaysViewController: UIViewController {
     var todaysChecklist: Checklist = [] {
         didSet {
-            self.tableView?.reloadData()
+           //self.saveListState()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
     }
-    
-    var weeklyRoster: Week = [:] {
-        didSet {
-            self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
-            self.collectionView?.reloadData()
-        }
-    }
-    
+
     var dayOfWeek: String = CurrentTime.shared.dayOfWeek {
         didSet {
-            self.todaysChecklist = self.weeklyRoster[self.dayOfWeek] ?? []
+            self.updateTodaysChecklist()
         }
     }
+    
+    var weeklyRosterIndex: Int = 0 {
+        didSet {
+            self.updateTodaysChecklist()
+        }
+    }
+    
+    var month: Month!
     
     let manager = ListManager()
     
     var tableView: UITableView!
-    var segmentedControl: UISegmentedControl!
-    var collectionView: UICollectionView!
+    var dayAndWeekControlView: DayAndWeekView!
     
     var todaysDate: Date!
-    var month: Month!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,29 +49,33 @@ class TodaysViewController: UIViewController {
         self.implementGUI()
         self.setDelegatesAndDatasources()
         self.registerCells()
-        
-        self.month = self.manager.returnCurrentMonth()
-        self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.month = self.manager.returnCurrentMonth()
-        self.weeklyRoster = self.month[self.segmentedControl.selectedSegmentIndex]
+        self.weeklyRosterIndex = self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
+        
+        [
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+        ].forEach { $0.isActive = true }
     }
     
     func setDelegatesAndDatasources() {
         self.tableView.dataSource = self
         self.tableView.delegate = self
-        
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
     }
     
     func registerCells() {
         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.reuseIdentifier)
-        self.collectionView.register(StoredListCollectionViewCell.self, forCellWithReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier)
     }
     
     func implementGUI() {
@@ -85,16 +91,80 @@ class TodaysViewController: UIViewController {
             return
         }
         
+        // self.saveListState()
+        
         let listMakerInstance = ListMakerViewController()
         listMakerInstance.manager = self.manager
         navigationController?.pushViewController(listMakerInstance, animated: true)
     }
     
+    func updateTodaysChecklist() {
+        print("\(self.weeklyRosterIndex) \(self.dayOfWeek) \(self.month.count)")
+        self.todaysChecklist = self.month[self.weeklyRosterIndex][self.dayOfWeek] ?? []
+    }
+    
+    func saveListState() {
+        self.manager.updateWeek(atIndex: self.weeklyRosterIndex, forDay: self.dayOfWeek, withValue: self.todaysChecklist)
+        let updatedWeek = try! self.manager.retrieve(week: weeklyRosterIndex)
+        self.manager.updateMonth(forWeek: weeklyRosterIndex, withValue: updatedWeek)
+        
+        print("Week \(self.weeklyRosterIndex), \(self.dayOfWeek)")
+        
+        do {
+            try print(self.manager.retrieveList(forWeek: self.weeklyRosterIndex, onDay: self.dayOfWeek))
+            print(self.manager.returnStoredMonth())
+            print(self.manager.returnCurrentMonth())
+        }
+        catch {
+            print("Nice try")
+        }
+    }
+    
+    @objc func didTapPullOut(sender: UIButton) {
+        print("pullout tapped")
+        
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
+        
+        [
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
+        ].forEach { $0.isActive = true }
+        
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        animator.startAnimation()
+    }
+    
     @objc func didTapWeekSegment(sender: UISegmentedControl) {
-        print("tapped")
-        self.weeklyRoster = self.month[sender.selectedSegmentIndex]
+        print("week segment tapped")
+        self.weeklyRosterIndex = sender.selectedSegmentIndex
+    }
+    
+    @objc func didTapDaySegment(sender: UISegmentedControl) {
+        print("day segment tapped")
         print(sender.selectedSegmentIndex)
-        dump(weeklyRoster)
+        self.dayOfWeek = WeekDayNames.short[sender.selectedSegmentIndex]
+    }
+    
+    @objc func swipeRightOnControls(sender: UISwipeGestureRecognizer) {
+        if sender.state == .ended {
+            guard sender.direction == .right else { return }
+        
+            self.dayAndWeekControlView.removeFromSuperview()
+            self.view.addSubview(self.dayAndWeekControlView)
+        
+            [
+                self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
+                self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+                self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+            ].forEach { $0.isActive = true }
+        }
     }
 }
 
@@ -113,63 +183,52 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let index = WeekDayNames.short.index(of: self.dayOfWeek)!
+        return WeekDayNames.long[index]
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
+        print("made cell")
         
         if self.todaysChecklist.isEmpty {
+            print("empty")
             cell.titleLabel?.text = "I'm empty!"
             cell.detailLabel?.text = "Tap me to construct a new list."
+            print("We've updated the cell")
         } else {
+            print("full")
             cell.titleLabel?.text = self.todaysChecklist[indexPath.row].title
             cell.detailLabel?.text = self.todaysChecklist[indexPath.row].detail
+            print("We've updated the cell")
+            
+            self.checkOff(cell: cell, at: indexPath.row)
         }
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("tapped cell")
         if self.todaysChecklist.isEmpty {
             performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
+        } else {
+            if let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell {
+                self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
+                print("Checked off == \(self.todaysChecklist[indexPath.row].checkedOff)")
+                self.checkOff(cell: cell, at: indexPath.row)
+                print("Value listed in datasource == \(self.todaysChecklist[indexPath.row].checkedOff)")
+            }
         }
     }
-}
-
-// MARK: - UICollectionViewDelegate and UICollectionViewDataSource
-
-extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
-    }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StoredListCollectionViewCell.reuseIdentifier, for: indexPath) as! StoredListCollectionViewCell
-        
-        cell.titleLabel.text = WeekDayNames.short[indexPath.row]
-        
-        switch self.segmentedControl.selectedSegmentIndex {
-        case 0:
-            cell.contentView.backgroundColor = .red
-        case 1:
-            cell.contentView.backgroundColor = .purple
-        case 2:
-            cell.contentView.backgroundColor = .blue
-        case 3:
-            cell.contentView.backgroundColor = .black
-        default:
-            break
+    func checkOff(cell: UITableViewCell, at index: Int) {
+        if cell.accessoryType == .none {
+            cell.accessoryType = .checkmark
+        } else if cell.accessoryType == .checkmark {
+            cell.accessoryType = .none
         }
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.dayOfWeek = WeekDayNames.short[indexPath.row]
-        
-        todaysChecklist = weeklyRoster[dayOfWeek] ?? []
     }
 }
 
@@ -178,68 +237,49 @@ extension TodaysViewController: UICollectionViewDelegate, UICollectionViewDataSo
 extension TodaysViewController: UIViewCustomizing {
     func createViews() {
         self.tableView = UITableView()
-        self.segmentedControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
-        self.segmentedControl.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
-        self.segmentedControl.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
+        self.dayAndWeekControlView = DayAndWeekView()
         
-        let collectionViewLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        let cellSideLength = (self.view.frame.height/5) - 40 // cell heights must be less than the collection view's height minus any padding -- otherwise, the compiler freaks out and endlessly loops
-        
-        collectionViewLayout.scrollDirection = .horizontal
-        collectionViewLayout.minimumInteritemSpacing = 20
-        collectionViewLayout.minimumLineSpacing = 20
-        collectionViewLayout.estimatedItemSize = CGSize(width: cellSideLength, height: cellSideLength)
-        collectionViewLayout.sectionInset = UIEdgeInsets(top: 30, left: 10, bottom: 10, right: 10)
-        
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = WeekDayNames.short.index(of: self.dayOfWeek)!
+        self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
+        self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchUpInside)
+//        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeRightOnControls(sender:)))
+//        swipeRight.direction = .right
+//        self.dayAndWeekControlView.contentView.addGestureRecognizer(swipeRight)
     }
     
     func setUpViewHeirarchy() {
         self.view.addSubview(self.tableView)
-        self.view.addSubview(self.segmentedControl)
-        self.view.addSubview(self.collectionView)
+        self.view.addSubview(self.dayAndWeekControlView)
     }
     
     func prepareForConstraints() {
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        self.collectionView.translatesAutoresizingMaskIntoConstraints = false
+        self.dayAndWeekControlView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
         let standardWidth = self.view.widthAnchor
         let standardXPosition = self.view.centerXAnchor
         
-        _ = [
+        [
             self.tableView.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
             self.tableView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
-            self.tableView.bottomAnchor.constraint(equalTo: self.segmentedControl.topAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             
-            self.segmentedControl.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
-            self.segmentedControl.centerXAnchor.constraint(equalTo: standardXPosition),
-            self.segmentedControl.heightAnchor.constraint(equalToConstant: 44),
-            self.segmentedControl.bottomAnchor.constraint(equalTo: self.collectionView.topAnchor, constant: -4),
-            
-            self.collectionView.widthAnchor.constraint(equalTo: standardWidth),
-            self.collectionView.centerXAnchor.constraint(equalTo: standardXPosition),
-            self.collectionView.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.20),
-            self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
-            ].map { $0.isActive = true }
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {
         self.view.backgroundColor = .white
         
         self.tableView.backgroundColor = .clear
-        self.tableView.separatorStyle = .none
-        
-        self.segmentedControl.backgroundColor = .white
-        self.segmentedControl.apportionsSegmentWidthsByContent = true
-        
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 50.0
-        
-        self.collectionView.backgroundColor = .white
     }
 }

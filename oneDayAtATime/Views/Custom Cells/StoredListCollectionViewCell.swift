@@ -24,6 +24,10 @@ class StoredListCollectionViewCell: UICollectionViewCell, ReuseIdentifying {
         constrainViews()
         styleViews()
     }
+    
+    override func prepareForReuse() {
+        self.titleLabel.text = ""
+    }
 }
 
 // MARK: - UIViewCustomizing
@@ -42,10 +46,10 @@ extension StoredListCollectionViewCell: UIViewCustomizing {
     }
     
     func constrainViews() {
-        _ = [
+        [
             self.titleLabel.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             self.titleLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor)
-        ].map { $0.isActive = true }
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {

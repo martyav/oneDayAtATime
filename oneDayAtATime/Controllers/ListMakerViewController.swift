@@ -17,13 +17,14 @@ class ListMakerViewController: UIViewController {
     
     var userTextInput: UITextField!
     var tableView: UITableView!
+    var dayAndWeekControlView: DayAndWeekView!
     var manager: ListManager!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "List Maker"
-                
+        
         do {
             self.currentList = try manager.retrieveList(forWeek: 0, onDay: CurrentTime.shared.dayOfWeek)
         }
@@ -43,7 +44,7 @@ class ListMakerViewController: UIViewController {
     }
     
     func registerCells() {
-         self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.reuseIdentifier)
+        self.tableView.register(ListTableViewCell.self, forCellReuseIdentifier: ListTableViewCell.reuseIdentifier)
     }
     
     func implementGUI() {
@@ -73,7 +74,7 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         if currentList.isEmpty {
             return "Make A New List"
         } else {
-            return "Edit A Stored List"
+            return "Add To A List" //return "Edit A Stored List"
         }
     }
     
@@ -110,9 +111,65 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func didTapSave(sender: UIButton) {
-        let alert = SaveAlertViewController(title: "", message: "\n\n\n\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
-        alert.manager = self.manager
-        alert.list = self.currentList
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
+        
+        [
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+        ].forEach { $0.isActive = true }
+        
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        animator.startAnimation()
+    }
+    
+    @objc func didTapSegment() {
+        guard self.dayAndWeekControlView.segmentedControlWeek.hasSelectedSegment && self.dayAndWeekControlView.segmentedControlDay.hasSelectedSegment else { return }
+        
+        let weekIndex = self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex
+        let dayIndex = self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex
+        let dayOfWeek = WeekDayNames.short[dayIndex]
+        
+        self.manager.updateWeek(atIndex: weekIndex, forDay: dayOfWeek, withValue: self.currentList)
+        let updatedWeek = try! self.manager.retrieve(week: weekIndex)
+        self.manager.updateMonth(forWeek: weekIndex, withValue: updatedWeek)
+        
+        print("Week \(weekIndex), \(dayOfWeek)")
+        
+        do {
+            try print(self.manager.retrieveList(forWeek: weekIndex, onDay: dayOfWeek))
+            print(self.manager.returnStoredMonth())
+            print(self.manager.returnCurrentMonth())
+        }
+        catch {
+            print("Nice try")
+        }
+        
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
+        
+        [
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 2),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
+        ].forEach { $0.isActive = true }
+        
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        animator.startAnimation()
+        
+        let alert = UIAlertController(title: "Saved!", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Thanks.", style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 }
@@ -143,30 +200,44 @@ extension ListMakerViewController: UIViewCustomizing {
     func createViews() {
         self.userTextInput = UITextField()
         self.tableView = UITableView()
+        self.dayAndWeekControlView = DayAndWeekView()
+        
+        self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapSegment), for: .valueChanged)
+        self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapSegment), for: .valueChanged)
     }
     
     func setUpViewHeirarchy() {
         self.view.addSubview(self.userTextInput)
         self.view.addSubview(self.tableView)
+        self.view.addSubview(self.dayAndWeekControlView)
     }
     
     func prepareForConstraints() {
         self.userTextInput.translatesAutoresizingMaskIntoConstraints = false
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.dayAndWeekControlView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
-        _ = [
-            self.userTextInput.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.8),
+        let standardWidth = self.view.widthAnchor
+        let standardXPosition = self.view.centerXAnchor
+        
+        [
+            self.userTextInput.widthAnchor.constraint(equalTo: standardWidth, multiplier: 0.8),
             self.userTextInput.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.05),
-            self.userTextInput.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.userTextInput.centerXAnchor.constraint(equalTo: standardXPosition),
             self.userTextInput.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 80),
             
-            self.tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: -16),
-            self.tableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            self.tableView.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
+            self.tableView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.tableView.topAnchor.constraint(equalTo: self.userTextInput.bottomAnchor, constant: 8),
-            self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-        ].map { $0.isActive = true }
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
+            
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {

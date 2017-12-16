@@ -130,12 +130,12 @@ extension ProfileViewController: UIViewCustomizing {
     }
     
     func constrainViews() {
-        _ = [
+        [
             self.collectionView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
             self.collectionView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             self.collectionView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
             self.collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
-            ].map { $0.isActive = true }
+            ].forEach { $0.isActive = true }
     }
     
     func styleViews() {        

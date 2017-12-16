@@ -25,6 +25,12 @@ class ListTableViewCell: UITableViewCell, ReuseIdentifying {
         constrainViews()
         styleViews()
     }
+    
+    override func prepareForReuse() {
+        self.titleLabel.text = ""
+        self.detailLabel.text = ""
+        self.accessoryType = .none
+    }
 }
 
 // MARK: - UIViewCustomizing
@@ -48,7 +54,7 @@ extension ListTableViewCell: UIViewCustomizing {
     }
     
     func constrainViews() {
-        _ = [
+        [
             self.titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             self.titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8.0),
             self.titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 8.0),
@@ -56,7 +62,7 @@ extension ListTableViewCell: UIViewCustomizing {
             self.detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 8.0),
             self.detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             self.detailLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ].map { $0.isActive = true }
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {
@@ -70,5 +76,7 @@ extension ListTableViewCell: UIViewCustomizing {
         
         self.titleLabel.textColor = .black
         self.detailLabel.textColor = .gray
+        
+        self.selectionStyle = .none
     }
 }

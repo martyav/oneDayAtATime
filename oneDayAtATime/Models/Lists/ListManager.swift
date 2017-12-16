@@ -17,8 +17,12 @@ enum ScheduleError: Error {
 }
 
 class ListManager {
-    private var month: Month
     private var storage = StorageManager.defaults
+    private var month: Month {
+        didSet {
+            self.storage.save(value: self.month)
+        }
+    }
     
     init(month: Month) {
         self.month = month
@@ -32,9 +36,9 @@ class ListManager {
         return self.month.count >= week && week > -1
     }
     
-    func save() {
-        self.storage.save(value: self.month)
-    }
+//    func save() {
+//        self.storage.save(value: self.month)
+//    }
     
     func returnCurrentMonth() -> Month {
         return self.month

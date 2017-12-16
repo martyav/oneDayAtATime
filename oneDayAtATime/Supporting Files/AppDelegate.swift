@@ -17,10 +17,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
                 
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        
+
         guard let windowCreated = window else {
             return false
         }
+        
+//        for family: String in UIFont.familyNames {
+//            print("\(family)")
+//           
+//            for names: String in UIFont.fontNames(forFamilyName: family) {
+//                print("== \(names)")
+//            }
+//        }
         
         let initialVC = TodaysViewController()
         
