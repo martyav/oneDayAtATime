@@ -8,12 +8,14 @@
 
 import UIKit
 
-class SaveAlertGUI: UIView, UIViewCustomizing {
+class DayAndWeekControlView: UIView, UIViewCustomizing {
     var contentView: UIView!
     var weekLabel: UILabel!
     var segmentedControlWeek: UISegmentedControl!
     var dayLabel: UILabel!
     var segmentedControlDay: UISegmentedControl!
+    
+    // delegates for observing when values in segmented controls change...
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -36,9 +38,9 @@ class SaveAlertGUI: UIView, UIViewCustomizing {
     func createViews() {
         self.contentView = UIView()
         self.weekLabel = UILabel()
-        self.segmentedControlWeek = UISegmentedControl(items: ["One", "Two", "Three", "Four"])
+        self.segmentedWeekControl = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
         self.dayLabel = UILabel()
-        self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
+        self.segmentedDayControl = UISegmentedControl(items: WeekDayNames.short)
     }
     
     func setUpViewHeirarchy() {
