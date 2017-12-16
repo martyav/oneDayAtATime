@@ -14,6 +14,7 @@ class DayAndWeekView: UIView, UIViewCustomizing {
     var segmentedControlWeek: UISegmentedControl!
     var dayLabel: UILabel!
     var segmentedControlDay: UISegmentedControl!
+    var pullOutButton: UIButton!
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -39,6 +40,7 @@ class DayAndWeekView: UIView, UIViewCustomizing {
         self.segmentedControlWeek = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
         self.dayLabel = UILabel()
         self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
+        self.pullOutButton = UIButton(type: .roundedRect)
     }
     
     func setUpViewHeirarchy() {
@@ -47,6 +49,7 @@ class DayAndWeekView: UIView, UIViewCustomizing {
         self.contentView.addSubview(self.segmentedControlWeek)
         self.contentView.addSubview(self.dayLabel)
         self.contentView.addSubview(self.segmentedControlDay)
+        self.contentView.addSubview(self.pullOutButton)
     }
     
     func prepareForConstraints() {
@@ -55,6 +58,7 @@ class DayAndWeekView: UIView, UIViewCustomizing {
         self.segmentedControlWeek.translatesAutoresizingMaskIntoConstraints = false
         self.dayLabel.translatesAutoresizingMaskIntoConstraints = false
         self.segmentedControlDay.translatesAutoresizingMaskIntoConstraints = false
+        self.pullOutButton.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
@@ -62,7 +66,12 @@ class DayAndWeekView: UIView, UIViewCustomizing {
             self.contentView.topAnchor.constraint(equalTo: self.topAnchor),
             self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             self.contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -88),
+            
+            self.pullOutButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
+            self.pullOutButton.widthAnchor.constraint(equalToConstant: 88),
+            self.pullOutButton.heightAnchor.constraint(equalToConstant: 44),
+            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             
             self.weekLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 6),
             self.weekLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 8),
@@ -93,5 +102,9 @@ class DayAndWeekView: UIView, UIViewCustomizing {
         self.dayLabel.text = "Choose day of week:"
         self.segmentedControlDay.apportionsSegmentWidthsByContent = true
         self.segmentedControlDay.isEnabled = true
+        self.pullOutButton.backgroundColor = .blue
+        self.pullOutButton.setTitle("Switch day?", for: .normal)
+        self.pullOutButton.setTitleColor(.white, for: .normal)
+        self.pullOutButton.isEnabled = true
     }
 }

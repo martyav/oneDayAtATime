@@ -109,13 +109,31 @@ class TodaysViewController: UIViewController {
         }
     }*/
     
+    @objc func didTapPullOut(sender: UIButton) {
+        print("pullout tapped")
+        NSLayoutConstraint.deactivate(self.dayAndWeekControlView.constraints)
+        
+        [
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+            self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ].forEach { $0.isActive = true }
+        
+        let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
+            self.view.layoutIfNeeded()
+        })
+        
+        animator.startAnimation()
+    }
+    
     @objc func didTapWeekSegment(sender: UISegmentedControl) {
-        print("tapped")
+        print("week segment tapped")
         self.weeklyRosterIndex = sender.selectedSegmentIndex
     }
     
     @objc func didTapDaySegment(sender: UISegmentedControl) {
-        print("tipped")
+        print("day segment tapped")
         self.dayOfWeek = WeekDayNames.short[sender.selectedSegmentIndex]
     }
 }
@@ -197,6 +215,7 @@ extension TodaysViewController: UIViewCustomizing {
         self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
         self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchUpInside)
     }
     
     func setUpViewHeirarchy() {
@@ -220,8 +239,8 @@ extension TodaysViewController: UIViewCustomizing {
             self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: standardWidth),
-            self.dayAndWeekControlView.centerXAnchor.constraint(equalTo: standardXPosition),
-            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 250),
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ].forEach { $0.isActive = true }
     }
