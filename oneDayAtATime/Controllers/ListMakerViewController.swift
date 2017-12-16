@@ -116,12 +116,11 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         
         [
             self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.tableView.bottomAnchor),
-            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
-            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-            ].forEach { $0.isActive = true }
+        ].forEach { $0.isActive = true }
         
         let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
             self.view.layoutIfNeeded()
@@ -157,10 +156,9 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         
         [
             self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
-            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 2),
             self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
-            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
         ].forEach { $0.isActive = true }
         
@@ -238,7 +236,6 @@ extension ListMakerViewController: UIViewCustomizing {
             self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor),
             self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
-            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
         ].forEach { $0.isActive = true }
     }

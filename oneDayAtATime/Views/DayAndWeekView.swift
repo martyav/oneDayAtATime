@@ -66,9 +66,9 @@ class DayAndWeekView: UIView, UIViewCustomizing {
             self.contentView.topAnchor.constraint(equalTo: self.topAnchor),
             self.contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
             self.contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.contentView.trailingAnchor.constraint(equalTo: self.pullOutButton.leadingAnchor, constant: -4),
+            self.contentView.trailingAnchor.constraint(equalTo: self.pullOutButton.leadingAnchor),
             
-            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: 4),
+            self.pullOutButton.leadingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
             self.pullOutButton.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor),
             self.pullOutButton.widthAnchor.constraint(equalToConstant: 100),
             self.pullOutButton.trailingAnchor.constraint(equalTo: self.trailingAnchor),
@@ -97,10 +97,22 @@ class DayAndWeekView: UIView, UIViewCustomizing {
     }
     
     func styleViews() {
+        let font = UIFont(name: "OleoScript-Regular", size: 20)
+        self.contentView.layer.cornerRadius = 30
+        self.contentView.backgroundColor = .blue
+        self.contentView.clipsToBounds = true
         self.weekLabel.text = "Choose week:"
+        self.weekLabel.textColor = .white
+        self.segmentedControlWeek.backgroundColor = .white
+        self.segmentedControlWeek.tintColor = .blue
+        self.segmentedControlWeek.setTitleTextAttributes([NSAttributedStringKey.font: font!], for: .normal)
         self.segmentedControlWeek.apportionsSegmentWidthsByContent = true
         self.segmentedControlWeek.isEnabled = true
         self.dayLabel.text = "Choose day of week:"
+        self.dayLabel.textColor = .white
+        self.segmentedControlDay.backgroundColor = .white
+        self.segmentedControlDay.tintColor = .blue
+        self.segmentedControlDay.setTitleTextAttributes([NSAttributedStringKey.font: font!], for: .normal)
         self.segmentedControlDay.apportionsSegmentWidthsByContent = true
         self.segmentedControlDay.isEnabled = true
         self.pullOutButton.backgroundColor = .blue

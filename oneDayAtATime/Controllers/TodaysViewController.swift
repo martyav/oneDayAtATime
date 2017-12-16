@@ -11,6 +11,7 @@ import UIKit
 class TodaysViewController: UIViewController {
     var todaysChecklist: Checklist = [] {
         didSet {
+           //self.saveListState()
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
@@ -35,8 +36,6 @@ class TodaysViewController: UIViewController {
     
     var tableView: UITableView!
     var dayAndWeekControlView: DayAndWeekView!
-//    var segmentedControlWeek: UISegmentedControl!
-//    var segmentedControlDay: UISegmentedControl!
     
     var todaysDate: Date!
     
@@ -81,7 +80,7 @@ class TodaysViewController: UIViewController {
             return
         }
         
-        //self.saveListState()
+        // self.saveListState()
         
         let listMakerInstance = ListMakerViewController()
         listMakerInstance.manager = self.manager
@@ -93,7 +92,7 @@ class TodaysViewController: UIViewController {
         self.todaysChecklist = self.month[self.weeklyRosterIndex][self.dayOfWeek] ?? []
     }
     
-    /*func saveListState() {
+    func saveListState() {
         self.manager.updateWeek(atIndex: self.weeklyRosterIndex, forDay: self.dayOfWeek, withValue: self.todaysChecklist)
         let updatedWeek = try! self.manager.retrieve(week: weeklyRosterIndex)
         self.manager.updateMonth(forWeek: weeklyRosterIndex, withValue: updatedWeek)
@@ -108,20 +107,18 @@ class TodaysViewController: UIViewController {
         catch {
             print("Nice try")
         }
-    }*/
+    }
     
     @objc func didTapPullOut(sender: UIButton) {
         print("pullout tapped")
-        
         
         self.dayAndWeekControlView.removeFromSuperview()
         self.view.addSubview(self.dayAndWeekControlView)
         
         [
             self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.tableView.bottomAnchor),
-            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
-            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ].forEach { $0.isActive = true }
@@ -187,23 +184,23 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("tapped")
+        print("tapped cell")
         if self.todaysChecklist.isEmpty {
             performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
         } else {
-            if let cell = tableView.cellForRow(at: indexPath) {
-                self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff = !self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff
-                print( self.month[self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff)
+            if let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell {
+                self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
+                print("Checked off == \(self.todaysChecklist[indexPath.row].checkedOff)")
                 self.checkOff(cell: cell, at: indexPath.row)
-                print(self.todaysChecklist[indexPath.row].checkedOff)
+                print("Value listed in datasource == \(self.todaysChecklist[indexPath.row].checkedOff)")
             }
         }
     }
     
     func checkOff(cell: UITableViewCell, at index: Int) {
-        if self.month[self.weeklyRosterIndex][self.dayOfWeek]![index].checkedOff {
+        if cell.accessoryType == .none {
             cell.accessoryType = .checkmark
-        } else {
+        } else if cell.accessoryType == .checkmark {
             cell.accessoryType = .none
         }
     }
@@ -243,7 +240,6 @@ extension TodaysViewController: UIViewCustomizing {
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
             self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             
-            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: standardWidth, constant: 100),
             self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
             self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
@@ -254,7 +250,6 @@ extension TodaysViewController: UIViewCustomizing {
         self.view.backgroundColor = .white
         
         self.tableView.backgroundColor = .clear
-        // self.tableView.separatorStyle = .none
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 50.0
     }

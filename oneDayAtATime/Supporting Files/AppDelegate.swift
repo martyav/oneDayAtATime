@@ -22,6 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return false
         }
         
+//        for family: String in UIFont.familyNames {
+//            print("\(family)")
+//           
+//            for names: String in UIFont.fontNames(forFamilyName: family) {
+//                print("== \(names)")
+//            }
+//        }
+        
         let initialVC = TodaysViewController()
         
         navigationController = UINavigationController(rootViewController: initialVC)
