@@ -58,6 +58,17 @@ class TodaysViewController: UIViewController {
         self.weeklyRosterIndex = self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        self.dayAndWeekControlView.removeFromSuperview()
+        self.view.addSubview(self.dayAndWeekControlView)
+        
+        [
+            self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+        ].forEach { $0.isActive = true }
+    }
+    
     func setDelegatesAndDatasources() {
         self.tableView.dataSource = self
         self.tableView.delegate = self
@@ -116,11 +127,11 @@ class TodaysViewController: UIViewController {
         self.view.addSubview(self.dayAndWeekControlView)
         
         [
-            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.tableView.bottomAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200),
             self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
-            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
-            self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233)
         ].forEach { $0.isActive = true }
         
         let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
@@ -139,6 +150,21 @@ class TodaysViewController: UIViewController {
         print("day segment tapped")
         print(sender.selectedSegmentIndex)
         self.dayOfWeek = WeekDayNames.short[sender.selectedSegmentIndex]
+    }
+    
+    @objc func swipeRightOnControls(sender: UISwipeGestureRecognizer) {
+        if sender.state == .ended {
+            guard sender.direction == .right else { return }
+        
+            self.dayAndWeekControlView.removeFromSuperview()
+            self.view.addSubview(self.dayAndWeekControlView)
+        
+            [
+                self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
+                self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
+                self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
+            ].forEach { $0.isActive = true }
+        }
     }
 }
 
@@ -218,6 +244,9 @@ extension TodaysViewController: UIViewCustomizing {
         self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchUpInside)
+//        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.swipeRightOnControls(sender:)))
+//        swipeRight.direction = .right
+//        self.dayAndWeekControlView.contentView.addGestureRecognizer(swipeRight)
     }
     
     func setUpViewHeirarchy() {
@@ -242,7 +271,7 @@ extension TodaysViewController: UIViewCustomizing {
             
             self.dayAndWeekControlView.trailingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
-            self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
         ].forEach { $0.isActive = true }
     }
     

@@ -115,11 +115,11 @@ extension ListMakerViewController: UITableViewDelegate, UITableViewDataSource {
         self.view.addSubview(self.dayAndWeekControlView)
         
         [
-            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.tableView.bottomAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             self.dayAndWeekControlView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 2),
             self.dayAndWeekControlView.widthAnchor.constraint(equalTo: self.view.widthAnchor, constant: 100),
             self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 233),
-            self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            self.dayAndWeekControlView.topAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -200)
         ].forEach { $0.isActive = true }
         
         let animator = UIViewPropertyAnimator(duration: 1, dampingRatio: 0.7, animations: {
