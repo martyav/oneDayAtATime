@@ -20,7 +20,7 @@
 		051C5DA31FCCCBFA005EA454 /* ListMakerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051C5DA21FCCCBFA005EA454 /* ListMakerViewController.swift */; };
 		051C5DA51FCCCC3B005EA454 /* TodaysViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 051C5DA41FCCCC3B005EA454 /* TodaysViewController.swift */; };
 		056ED0AF1FDCA56100C3CAA3 /* CurrentTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056ED0AE1FDCA56100C3CAA3 /* CurrentTime.swift */; };
-		056ED0B11FDDCC4500C3CAA3 /* DayAndWeekControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056ED0B01FDDCC4500C3CAA3 /* DayAndWeekControlView.swift */; };
+		056ED0B11FDDCC4500C3CAA3 /* DayAndWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056ED0B01FDDCC4500C3CAA3 /* DayAndWeekView.swift */; };
 		05B79EB11FCD12DE00E4BCB3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB01FCD12DE00E4BCB3 /* Constants.swift */; };
 		05B79EB31FCD2C5300E4BCB3 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB21FCD2C5300E4BCB3 /* ListTableViewCell.swift */; };
 		05B79EB51FCE263000E4BCB3 /* UIViewCustomizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */; };
@@ -46,7 +46,7 @@
 		051C5DA21FCCCBFA005EA454 /* ListMakerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMakerViewController.swift; sourceTree = "<group>"; };
 		051C5DA41FCCCC3B005EA454 /* TodaysViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysViewController.swift; sourceTree = "<group>"; };
 		056ED0AE1FDCA56100C3CAA3 /* CurrentTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTime.swift; sourceTree = "<group>"; };
-		056ED0B01FDDCC4500C3CAA3 /* DayAndWeekControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayAndWeekControlView.swift; sourceTree = "<group>"; };
+		056ED0B01FDDCC4500C3CAA3 /* DayAndWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayAndWeekView.swift; sourceTree = "<group>"; };
 		05B79EB01FCD12DE00E4BCB3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		05B79EB21FCD2C5300E4BCB3 /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		05B79EB41FCE263000E4BCB3 /* UIViewCustomizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewCustomizing.swift; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 			children = (
 				051C5D841FCCBC23005EA454 /* Assets.xcassets */,
 				051C5D861FCCBC23005EA454 /* LaunchScreen.storyboard */,
-				056ED0B01FDDCC4500C3CAA3 /* DayAndWeekControlView.swift */,
+				056ED0B01FDDCC4500C3CAA3 /* DayAndWeekView.swift */,
 				05B79EB61FCE26BE00E4BCB3 /* Custom Cells */,
 			);
 			path = Views;
@@ -216,6 +216,7 @@
 				TargetAttributes = {
 					051C5D771FCCBC23005EA454 = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -267,7 +268,7 @@
 				051C5D9D1FCCC91D005EA454 /* Month.swift in Sources */,
 				05F33A751FDF7878001D9C32 /* StorageManager.swift in Sources */,
 				051C5DA31FCCCBFA005EA454 /* ListMakerViewController.swift in Sources */,
-				056ED0B11FDDCC4500C3CAA3 /* DayAndWeekControlView.swift in Sources */,
+				056ED0B11FDDCC4500C3CAA3 /* DayAndWeekView.swift in Sources */,
 				051C5D7C1FCCBC23005EA454 /* AppDelegate.swift in Sources */,
 				051AB3B81FDA19970077575C /* StoredListCollectionViewCell.swift in Sources */,
 				051C5D951FCCC5E9005EA454 /* List.swift in Sources */,
@@ -402,12 +403,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GD7JHZ9557;
 				INFOPLIST_FILE = oneDayAtATime/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.martyav.oneDayAtATime.oneDayAtATime;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -417,6 +420,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = GD7JHZ9557;
 				INFOPLIST_FILE = oneDayAtATime/Info.plist;

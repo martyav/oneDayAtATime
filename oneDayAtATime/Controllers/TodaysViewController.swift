@@ -34,8 +34,9 @@ class TodaysViewController: UIViewController {
     let manager = ListManager()
     
     var tableView: UITableView!
-    var segmentedControlWeek: UISegmentedControl!
-    var segmentedControlDay: UISegmentedControl!
+    var dayAndWeekControlView: DayAndWeekView!
+//    var segmentedControlWeek: UISegmentedControl!
+//    var segmentedControlDay: UISegmentedControl!
     
     var todaysDate: Date!
     
@@ -55,7 +56,7 @@ class TodaysViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.month = self.manager.returnCurrentMonth()
-        self.weeklyRosterIndex = self.segmentedControlWeek.selectedSegmentIndex
+        self.weeklyRosterIndex = self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex
     }
     
     func setDelegatesAndDatasources() {
@@ -169,7 +170,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
                 self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff = !self.month[self.weeklyRosterIndex][self.dayOfWeek]![indexPath.row].checkedOff
                // self.weeklyRosterIndex = self.segmentedControlWeek.selectedSegmentIndex
                 // self.todaysChecklist = self.weeklyRoster[self.dayOfWeek]!
-                print( self.month[self.segmentedControlWeek.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff)
+                print( self.month[self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex][self.dayOfWeek]![indexPath.row].checkedOff)
                 self.checkOff(cell: cell, at: indexPath.row)
                 print(self.todaysChecklist[indexPath.row].checkedOff)
             }
@@ -190,26 +191,22 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
 extension TodaysViewController: UIViewCustomizing {
     func createViews() {
         self.tableView = UITableView()
+        self.dayAndWeekControlView = DayAndWeekView()
         
-        self.segmentedControlWeek = UISegmentedControl(items: ["Week 1", "Week 2", "Week 3", "Week 4"])
-        self.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
-        self.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
-        
-        self.segmentedControlDay = UISegmentedControl(items: WeekDayNames.short)
-        self.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
-        self.segmentedControlDay.selectedSegmentIndex = WeekDayNames.short.index(of: self.dayOfWeek)!
+        self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = WeekDayNames.short.index(of: self.dayOfWeek)!
+        self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
+        self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
+        self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
     }
     
     func setUpViewHeirarchy() {
         self.view.addSubview(self.tableView)
-        self.view.addSubview(self.segmentedControlWeek)
-        self.view.addSubview(self.segmentedControlDay)
+        self.view.addSubview(self.dayAndWeekControlView)
     }
     
     func prepareForConstraints() {
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
-        self.segmentedControlWeek.translatesAutoresizingMaskIntoConstraints = false
-        self.segmentedControlDay.translatesAutoresizingMaskIntoConstraints = false
+        self.dayAndWeekControlView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
@@ -220,18 +217,13 @@ extension TodaysViewController: UIViewCustomizing {
             self.tableView.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
             self.tableView.centerXAnchor.constraint(equalTo: standardXPosition),
             self.tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 40),
-            self.tableView.bottomAnchor.constraint(equalTo: self.segmentedControlDay.topAnchor),
+            self.tableView.bottomAnchor.constraint(equalTo: self.dayAndWeekControlView.topAnchor),
             
-            self.segmentedControlDay.widthAnchor.constraint(equalTo: standardWidth, constant: -16),
-            self.segmentedControlDay.centerXAnchor.constraint(equalTo: standardXPosition),
-            self.segmentedControlDay.heightAnchor.constraint(equalToConstant: 44),
-            self.segmentedControlDay.bottomAnchor.constraint(equalTo: self.segmentedControlWeek.topAnchor, constant: -8),
-            
-            self.segmentedControlWeek.widthAnchor.constraint(equalTo: standardWidth),
-            self.segmentedControlWeek.centerXAnchor.constraint(equalTo: standardXPosition),
-            self.segmentedControlWeek.heightAnchor.constraint(equalToConstant: 44),
-            self.segmentedControlWeek.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -8) // figure out where tabbar begins and attach bottom of collection view to that y coordinate
-            ].forEach { $0.isActive = true }
+            self.dayAndWeekControlView.widthAnchor.constraint(equalTo: standardWidth),
+            self.dayAndWeekControlView.centerXAnchor.constraint(equalTo: standardXPosition),
+            self.dayAndWeekControlView.heightAnchor.constraint(equalToConstant: 250),
+            self.dayAndWeekControlView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ].forEach { $0.isActive = true }
     }
     
     func styleViews() {
@@ -239,13 +231,6 @@ extension TodaysViewController: UIViewCustomizing {
         
         self.tableView.backgroundColor = .clear
         // self.tableView.separatorStyle = .none
-        
-        self.segmentedControlWeek.backgroundColor = .white
-        self.segmentedControlWeek.apportionsSegmentWidthsByContent = true
-        
-        self.segmentedControlDay.backgroundColor = .white
-        self.segmentedControlDay.apportionsSegmentWidthsByContent = true
-        
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 50.0
     }

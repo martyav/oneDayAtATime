@@ -9,7 +9,7 @@
 import UIKit
 
 class SaveAlertViewController: UIAlertController { // we can't subclass from UIAlertController tho -- follow https://github.com/JSSAlertView/JSSAlertView/blob/master/JSSAlertView/Classes/JSSAlertView.swift for a roadmap of how to handle this
-    var alertControls: DayAndWeekControlView!
+    var alertControls: DayAndWeekView!
     var confirmButton: UIAlertAction!
     var manager: ListManager!
     var list: Checklist!
@@ -20,7 +20,7 @@ class SaveAlertViewController: UIAlertController { // we can't subclass from UIA
         let magicNumber = CGFloat(18.0) // need to get a relative value to prevent controls from exceeding margin...
         let frame = CGRect(x: 0, y: 8, width: self.view.bounds.size.width - magicNumber, height: 200)
         
-        self.alertControls = DayAndWeekControlView(frame: frame)
+        self.alertControls = DayAndWeekView(frame: frame)
         self.view.addSubview(alertControls)
         
         self.confirmButton = UIAlertAction(title: "Confirm", style: .default, handler: {(alert: UIAlertAction) in
