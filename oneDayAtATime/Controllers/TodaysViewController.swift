@@ -9,53 +9,22 @@
 import UIKit
 
 class TodaysViewController: UIViewController {
-    var todaysChecklist: Checklist = [] {
-        didSet {
-           //self.saveListState()
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-    }
-
-    var dayOfWeek: String = CurrentTime.shared.dayOfWeek {
-        didSet {
-            self.updateTodaysChecklist()
-        }
-    }
-    
-    var weeklyRosterIndex: Int = 0 {
-        didSet {
-            self.updateTodaysChecklist()
-        }
-    }
-    
-    var month: Month!
-    
-    let manager = ListManager()
-    
     var tableView: UITableView!
     var dayAndWeekControlView: DayAndWeekView!
-    
-    var todaysDate: Date!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Today's List"
         
-        self.todaysDate = CurrentTime.shared.todaysDate
-        
         self.implementGUI()
-        self.setDelegatesAndDatasources()
         self.registerCells()
-    }
+        
+        tableView.dataSource = self
+        tableView.delegate = self    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        self.month = self.manager.returnCurrentMonth()
-        self.weeklyRosterIndex = self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -70,8 +39,8 @@ class TodaysViewController: UIViewController {
     }
     
     func setDelegatesAndDatasources() {
-        self.tableView.dataSource = self
-        self.tableView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
     }
     
     func registerCells() {
@@ -94,30 +63,15 @@ class TodaysViewController: UIViewController {
         // self.saveListState()
         
         let listMakerInstance = ListMakerViewController()
-        listMakerInstance.manager = self.manager
         navigationController?.pushViewController(listMakerInstance, animated: true)
     }
     
-    func updateTodaysChecklist() {
-        print("\(self.weeklyRosterIndex) \(self.dayOfWeek) \(self.month.count)")
-        self.todaysChecklist = self.month[self.weeklyRosterIndex][self.dayOfWeek] ?? []
+    func updatecurrentList() {
+        
     }
     
     func saveListState() {
-        self.manager.updateWeek(atIndex: self.weeklyRosterIndex, forDay: self.dayOfWeek, withValue: self.todaysChecklist)
-        let updatedWeek = try! self.manager.retrieve(week: weeklyRosterIndex)
-        self.manager.updateMonth(forWeek: weeklyRosterIndex, withValue: updatedWeek)
         
-        print("Week \(self.weeklyRosterIndex), \(self.dayOfWeek)")
-        
-        do {
-            try print(self.manager.retrieveList(forWeek: self.weeklyRosterIndex, onDay: self.dayOfWeek))
-            print(self.manager.returnStoredMonth())
-            print(self.manager.returnCurrentMonth())
-        }
-        catch {
-            print("Nice try")
-        }
     }
     
     @objc func didTapPullOut(sender: UIButton) {
@@ -142,14 +96,11 @@ class TodaysViewController: UIViewController {
     }
     
     @objc func didTapWeekSegment(sender: UISegmentedControl) {
-        print("week segment tapped")
-        self.weeklyRosterIndex = sender.selectedSegmentIndex
+       
     }
     
     @objc func didTapDaySegment(sender: UISegmentedControl) {
-        print("day segment tapped")
-        print(sender.selectedSegmentIndex)
-        self.dayOfWeek = WeekDayNames.short[sender.selectedSegmentIndex]
+       
     }
     
     @objc func swipeRightOnControls(sender: UISwipeGestureRecognizer) {
@@ -176,59 +127,40 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if todaysChecklist.isEmpty {
-            return 1
-        } else {
-            return todaysChecklist.count
-        }
+        return 1
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let index = WeekDayNames.short.index(of: self.dayOfWeek)!
-        return WeekDayNames.long[index]
+        return "???"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         print("made cell")
         
-        if self.todaysChecklist.isEmpty {
-            print("empty")
-            cell.titleLabel?.text = "I'm empty!"
-            cell.detailLabel?.text = "Tap me to construct a new list."
-            print("We've updated the cell")
-        } else {
-            print("full")
-            cell.titleLabel?.text = self.todaysChecklist[indexPath.row].title
-            cell.detailLabel?.text = self.todaysChecklist[indexPath.row].detail
-            print("We've updated the cell")
-            
-            self.checkOff(cell: cell, at: indexPath.row)
-        }
+        cell.titleLabel.text = "Hi"
+        cell.accessoryType = .checkmark
+        print(cell.titleLabel.text)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("tapped cell")
-        if self.todaysChecklist.isEmpty {
-            performSegue(withIdentifier: Identifier.todayVCToListMakerVC, sender: self)
-        } else {
-            if let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell {
-                self.todaysChecklist[indexPath.row].checkedOff = !self.todaysChecklist[indexPath.row].checkedOff
-                print("Checked off == \(self.todaysChecklist[indexPath.row].checkedOff)")
-                self.checkOff(cell: cell, at: indexPath.row)
-                print("Value listed in datasource == \(self.todaysChecklist[indexPath.row].checkedOff)")
-            }
+        
+        guard let cell = tableView.cellForRow(at: indexPath) as? ListTableViewCell else {
+            return
         }
+        
+        cell.accessoryType = checkOff(cell: cell, at: indexPath.row)
     }
     
-    func checkOff(cell: UITableViewCell, at index: Int) {
+    func checkOff(cell: UITableViewCell, at index: Int) -> UITableViewCellAccessoryType {
         if cell.accessoryType == .none {
-            cell.accessoryType = .checkmark
-        } else if cell.accessoryType == .checkmark {
-            cell.accessoryType = .none
+            return .checkmark
         }
+        
+        return .none
     }
 }
 
@@ -239,7 +171,7 @@ extension TodaysViewController: UIViewCustomizing {
         self.tableView = UITableView()
         self.dayAndWeekControlView = DayAndWeekView()
         
-        self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = WeekDayNames.short.index(of: self.dayOfWeek)!
+        self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = 1
         self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
         self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
@@ -278,7 +210,7 @@ extension TodaysViewController: UIViewCustomizing {
     func styleViews() {
         self.view.backgroundColor = .white
         
-        self.tableView.backgroundColor = .clear
+        self.tableView.backgroundColor = .white
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 50.0
     }
