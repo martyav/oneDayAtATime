@@ -11,17 +11,26 @@ import UIKit
 class TodaysViewController: UIViewController {
     var tableView: UITableView!
     var dayAndWeekControlView: DayAndWeekView!
-
+    var list: Week!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Today's List"
         
+        let mon = ListItem(title: "??", detail: "", checkedOff: false)
+        let mpn = ListItem(title: "?", detail: "", checkedOff: false)
+        let mqn = ListItem(title: "???", detail: "", checkedOff: false)
+        
+        self.list = ["Monday": [mon, mpn, mqn, mon], "Tuesday": [mon], "Wednesday": [mon, mon]]
+        
         self.implementGUI()
         self.registerCells()
         
         tableView.dataSource = self
-        tableView.delegate = self    }
+        tableView.delegate = self
+        
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -127,7 +136,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return list["Monday"]?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -138,8 +147,14 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         print("made cell")
         
-        cell.titleLabel.text = "Hi"
-        cell.accessoryType = .checkmark
+        cell.titleLabel.text = list["Monday"]?[indexPath.row].title
+        
+        if (list["Monday"]?[indexPath.row].checkedOff)! {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
+        
         print(cell.titleLabel.text)
         
         return cell
@@ -153,6 +168,15 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         cell.accessoryType = checkOff(cell: cell, at: indexPath.row)
+        
+        if let item = self.list["Monday"]?[indexPath.row] {
+            let newValue = checkOff(item: item)
+            let updatedItem = ListItem(title: cell.titleLabel.text ?? "", detail: cell.detailLabel.text ?? "", checkedOff: newValue)
+            
+            self.list["Monday"]![indexPath.row] = updatedItem
+        }
+        
+        print(self.list["Monday"]![indexPath.row])
     }
     
     func checkOff(cell: UITableViewCell, at index: Int) -> UITableViewCellAccessoryType {
@@ -161,6 +185,10 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return .none
+    }
+    
+    func checkOff(item: ListItem) -> Bool {
+        return !item.checkedOff
     }
 }
 

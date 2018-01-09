@@ -10,6 +10,5 @@ import Foundation
 
 struct ListItem: Codable {
     let title: String
-    let detail: String
-    var checkedOff: Bool
+    var checkedOff: Bool = false
 }

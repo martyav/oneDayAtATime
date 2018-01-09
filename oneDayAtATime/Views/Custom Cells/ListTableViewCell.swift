@@ -28,7 +28,6 @@ class ListTableViewCell: UITableViewCell, ReuseIdentifying {
     
     override func prepareForReuse() {
         self.titleLabel.text = ""
-        self.detailLabel.text = ""
         self.accessoryType = .none
     }
 }
@@ -38,12 +37,10 @@ class ListTableViewCell: UITableViewCell, ReuseIdentifying {
 extension ListTableViewCell: UIViewCustomizing {
     func createViews() {
         self.titleLabel = UILabel()
-        self.detailLabel = UILabel()
     }
     
     func setUpViewHeirarchy() {
         self.contentView.addSubview(titleLabel)
-        self.contentView.addSubview(detailLabel)
     }
     
     func prepareForConstraints() {
@@ -58,24 +55,17 @@ extension ListTableViewCell: UIViewCustomizing {
             self.titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             self.titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8.0),
             self.titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 8.0),
-            self.detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor),
-            self.detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor, constant: 8.0),
-            self.detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            self.detailLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            self.titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ].forEach { $0.isActive = true }
     }
     
     func styleViews() {
         self.titleLabel.font = UIFont(name: "Avenir", size: 20)
-        self.detailLabel.font = UIFont(name: "Avenir", size: 16)
         
         self.titleLabel.numberOfLines = 1
         self.titleLabel.lineBreakMode = .byTruncatingTail
-        self.detailLabel.numberOfLines = 0
-        self.detailLabel.lineBreakMode = .byWordWrapping
         
         self.titleLabel.textColor = .black
-        self.detailLabel.textColor = .gray
         
         self.selectionStyle = .none
     }

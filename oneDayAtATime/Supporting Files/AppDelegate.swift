@@ -10,7 +10,7 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     var navigationController: UINavigationController?
 
@@ -21,14 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let windowCreated = window else {
             return false
         }
-        
-//        for family: String in UIFont.familyNames {
-//            print("\(family)")
-//           
-//            for names: String in UIFont.fontNames(forFamilyName: family) {
-//                print("== \(names)")
-//            }
-//        }
         
         let initialVC = TodaysViewController()
         
