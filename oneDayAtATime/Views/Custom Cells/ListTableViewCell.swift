@@ -47,7 +47,6 @@ extension ListTableViewCell: UIViewCustomizing {
         self.contentView.autoresizingMask = .flexibleHeight
         
         self.titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.detailLabel.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func constrainViews() {
@@ -62,8 +61,8 @@ extension ListTableViewCell: UIViewCustomizing {
     func styleViews() {
         self.titleLabel.font = UIFont(name: "Avenir", size: 20)
         
-        self.titleLabel.numberOfLines = 1
-        self.titleLabel.lineBreakMode = .byTruncatingTail
+        self.titleLabel.numberOfLines = 3
+        self.titleLabel.lineBreakMode = .byWordWrapping
         
         self.titleLabel.textColor = .black
         

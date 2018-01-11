@@ -138,7 +138,7 @@
 			children = (
 				05392D211FE569F500CF4983 /* Fonts */,
 				05F33A701FDF41FD001D9C32 /* Protocols */,
-				05F33A6F1FDF41DE001D9C32 /* UIKit Extensions */,
+				05F33A6F1FDF41DE001D9C32 /* Extensions */,
 				051C5D7B1FCCBC23005EA454 /* AppDelegate.swift */,
 				05F33A741FDF7878001D9C32 /* StorageManager.swift */,
 				05B79EB01FCD12DE00E4BCB3 /* Constants.swift */,
@@ -175,12 +175,12 @@
 			path = "Custom Cells";
 			sourceTree = "<group>";
 		};
-		05F33A6F1FDF41DE001D9C32 /* UIKit Extensions */ = {
+		05F33A6F1FDF41DE001D9C32 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				05F33A6D1FDF41CB001D9C32 /* UISegmentedControl+hasSelectedSegment.swift */,
 			);
-			path = "UIKit Extensions";
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		05F33A701FDF41FD001D9C32 /* Protocols */ = {

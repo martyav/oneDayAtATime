@@ -18,11 +18,11 @@ class TodaysViewController: UIViewController {
         
         self.title = "Today's List"
         
-        let mon = ListItem(title: "??", detail: "", checkedOff: false)
-        let mpn = ListItem(title: "?", detail: "", checkedOff: false)
-        let mqn = ListItem(title: "???", detail: "", checkedOff: false)
+        let todaysPath = self.findFileOfWeekToPresentInitially()
+        DataStore.manager.select(filepath: todaysPath) // we need to check if the file exists and act accordingly. as-is, this defaults to initial value if the file does not exist
+
         
-        self.list = ["Monday": [mon, mpn, mqn, mon], "Tuesday": [mon], "Wednesday": [mon, mon]]
+        self.list = DataStore.manager.retrieveFullWeek()
         
         self.implementGUI()
         self.registerCells()
@@ -64,15 +64,30 @@ class TodaysViewController: UIViewController {
         self.styleViews()
     }
     
-    override func performSegue(withIdentifier identifier: String, sender: Any?) {
-        guard identifier == Identifier.todayVCToListMakerVC else {
-            return
+//    override func performSegue(withIdentifier identifier: String, sender: Any?) {
+//        guard identifier == Identifier.todayVCToListMakerVC else {
+//            return
+//        }
+//
+//        // self.saveListState()
+//
+//        let listMakerInstance = ListMakerViewController()
+//        navigationController?.pushViewController(listMakerInstance, animated: true)
+//    }
+    
+    func findFileOfWeekToPresentInitially() -> PathName {
+        let numOfWeeks = CurrentTime.shared.weeksInMonth
+        let ordinalOfThisWeek = CurrentTime.shared.weekOfMonth
+        
+        if ordinalOfThisWeek == 1 {
+            return .FirstWeek
         }
         
-        // self.saveListState()
+        if ordinalOfThisWeek == numOfWeeks {
+            return .LastWeek
+        }
         
-        let listMakerInstance = ListMakerViewController()
-        navigationController?.pushViewController(listMakerInstance, animated: true)
+        return .MiddleWeek
     }
     
     func updatecurrentList() {
@@ -136,7 +151,12 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return list["Monday"]?.count ?? 0
+        let day = CurrentTime.shared.dayOfWeek
+        let week = DataStore.manager.retrieveFullWeek()
+        
+        print(week[day]?.count ?? "nada")
+        
+        return week[day]?.count ?? 1
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -147,12 +167,12 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ListTableViewCell.reuseIdentifier, for: indexPath) as! ListTableViewCell
         print("made cell")
         
-        cell.titleLabel.text = list["Monday"]?[indexPath.row].title
+        cell.titleLabel.text = list["Mon"]?[indexPath.row].title ?? "Your list is empty. Tap me to make a new one!"
         
-        if (list["Monday"]?[indexPath.row].checkedOff)! {
+        cell.accessoryType = .none
+        
+        if list["Mon"]?[indexPath.row].checkedOff != nil {
             cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
         }
         
         print(cell.titleLabel.text)
@@ -171,7 +191,7 @@ extension TodaysViewController: UITableViewDelegate, UITableViewDataSource {
         
         if let item = self.list["Monday"]?[indexPath.row] {
             let newValue = checkOff(item: item)
-            let updatedItem = ListItem(title: cell.titleLabel.text ?? "", detail: cell.detailLabel.text ?? "", checkedOff: newValue)
+            let updatedItem = ListItem(title: cell.titleLabel.text ?? "", checkedOff: newValue)
             
             self.list["Monday"]![indexPath.row] = updatedItem
         }
@@ -200,7 +220,7 @@ extension TodaysViewController: UIViewCustomizing {
         self.dayAndWeekControlView = DayAndWeekView()
         
         self.dayAndWeekControlView.segmentedControlDay.selectedSegmentIndex = 1
-        self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth()
+        self.dayAndWeekControlView.segmentedControlWeek.selectedSegmentIndex = CurrentTime.shared.weekOfMonth
         self.dayAndWeekControlView.segmentedControlDay.addTarget(self, action: #selector(self.didTapDaySegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.segmentedControlWeek.addTarget(self, action: #selector(self.didTapWeekSegment(sender:)), for: .valueChanged)
         self.dayAndWeekControlView.pullOutButton.addTarget(self, action: #selector(self.didTapPullOut(sender:)), for: UIControlEvents.touchUpInside)

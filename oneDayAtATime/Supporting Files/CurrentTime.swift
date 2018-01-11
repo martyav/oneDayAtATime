@@ -15,26 +15,46 @@ class CurrentTime {
         self.dateFormatter.locale = Locale.autoupdatingCurrent
     }
     
-    var todaysDate: Date {
-        get {
-            return Date()
-        }
-    }
-    
     let dateFormatter = DateFormatter()
     let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    
+    var todaysDate: Date {
+        return Date()
+    }
     
     var dayOfWeek: String {
         dateFormatter.dateFormat = "E" // E tells the formatter to return an abbreviated weekday: Sun, Mon, Tue, etc
         return dateFormatter.string(from: todaysDate)
     }
     
-    func weekOfMonth() -> Int {
+    var weekOfMonth: Int {
         return self.calendar.component(Calendar.Component.weekOfMonth, from: self.todaysDate)
     }
     
-    func appleWtf() {
-        print(self.calendar.shortStandaloneWeekdaySymbols == self.calendar.standaloneWeekdaySymbols)
+    var daysInFirstWeek: Int {
+        return 7 - self.calendar.firstWeekday
+    }
+    
+    var daysInMonth: Int {
+        let rangeOfDays = self.calendar.range(of: .day, in: .month, for: self.todaysDate)!
+        
+        return rangeOfDays.count
+    }
+    
+    var weeksInMonth: Int {
+        let baseline = 4
+        let difference = 7 - self.daysInFirstWeek
+        let remainder = self.daysInMonth % 28
+        
+        guard remainder != 0 && difference != 0 else {
+            return baseline
+        }
+        
+        if difference + remainder <= 7 {
+            return baseline + 1
+        }
+        
+        return baseline + 2
     }
     
     func weekDayNamesInitials() -> [String] {

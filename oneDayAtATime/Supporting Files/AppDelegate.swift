@@ -29,6 +29,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         windowCreated.rootViewController = navigationController
         windowCreated.makeKeyAndVisible()
         
+        
+        print(DataStore.manager.retrieveFullWeek())
+        DataStore.manager.add(item: "!!", toDay: "Mon")
+        DataStore.manager.load()
+        
         return true
     }
 

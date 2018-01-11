@@ -13,12 +13,12 @@ enum StorageError: Error {
 }
 
 enum PathName: String {
-    case Week1, Week2, Week3
+    case FirstWeek, MiddleWeek, LastWeek
 }
 
 final class DataStore {
     static let manager = DataStore()
-    var pathName: String = "Week1.plist"
+    var pathName: String = "FirstWeek.plist"
     
     private init(){}
     
@@ -28,8 +28,8 @@ final class DataStore {
         }
     }
     
-    func select(filepath path: PathName) {
-        self.pathName = "\(path.rawValue).plist"
+    func select(filepath pathName: PathName) {
+        self.pathName = "\(pathName.rawValue).plist"
     }
 
     func findDocumentsDirectory() -> URL {
@@ -40,8 +40,10 @@ final class DataStore {
         return paths.first!
     }
     
-    func find(filepath path: String) -> URL {
-        return DataStore.manager.findDocumentsDirectory().appendingPathComponent(path)
+    func find(filepath pathName: String) -> URL? {
+        let fullPath = DataStore.manager.findDocumentsDirectory().appendingPathComponent(pathName)
+        
+        return fullPath
     }
     
     func storeToDisk() {
@@ -49,10 +51,14 @@ final class DataStore {
         
         do {
             let data = try encoder.encode(lists)
-            try data.write(to: self.find(filepath: pathName), options: .atomic)
+            
+            try data.write(to: DataStore.manager.findDocumentsDirectory().appendingPathComponent(self.pathName), options: .atomic)
+            
+            print("stored")
         }
         catch {
-            print(StorageError.pathNotFound.localizedDescription)
+            print("not stored")
+            print(error.localizedDescription)
         }
     }
     
@@ -64,32 +70,11 @@ final class DataStore {
         return self.lists[day]
     }
     
-    func retrieveWeek() -> [String: Checklist] {
+    func retrieveFullWeek() -> [String: Checklist] {
         return lists
     }
     
-    func retrieveWeek(_ num: Int) -> [String: Checklist] {
-        let currentPathName = self.pathName.components(separatedBy: ".").first!
-        var tempPathName: PathName
-        
-        switch num {
-        case 3:
-            tempPathName = .Week3
-        case 2:
-            tempPathName = .Week2
-        default:
-            tempPathName = .Week1
-        }
-        
-        defer {
-            select(filepath: PathName(rawValue: currentPathName)!)
-        }
-        
-        select(filepath: tempPathName)
-        return retrieveWeek()
-    }
-    
-    func add(item: String, to day: String) {
+    func add(item: String, toDay day: String) {
         let newItem = ListItem(title: item, checkedOff: false)
         var newList = retrieve(list: day) ?? Checklist()
         
@@ -169,8 +154,13 @@ final class DataStore {
     }
     
     func load() {
-        let path = find(filepath: pathName)
         let decoder = PropertyListDecoder()
+        
+        guard let path = find(filepath: self.pathName) else {
+            print("File does not exist yet")
+            print(self.pathName)
+            return
+        }
         
         do {
             let data = try Data.init(contentsOf: path)
